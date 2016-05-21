@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/C:/JavaProjects/MonopolyWeb/WSDL%201.0/MonopolyWebServiceService.wsdl" uri="src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService.wsdl"/>
+    <system systemId="file:/C:/JavaProjects/MonopolyWeb/WSDL%201.0/MonopolyWebServiceService_schema1.xsd" uri="src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService_schema1.xsd"/>
+</catalog>
