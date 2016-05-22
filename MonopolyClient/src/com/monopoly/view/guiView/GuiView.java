@@ -1,8 +1,8 @@
 package com.monopoly.view.guiView;
 
-import com.monopoly.logic.events.Event;
 import com.monopoly.view.View;
 import com.monopoly.view.guiView.guiEntities.GuiCell;
+import com.monopoly.ws.Event;
 
 import java.io.File;
 import java.util.List;
@@ -58,7 +58,7 @@ public class GuiView extends View
     protected void promptPlayerToBuy(Event event)
     {
       monopolBoard.promptPlayerToBuy(event.getEventMessage(), playerBuyAssetDecision,
-                                     event.getEventID());
+                                     event.getId());
     }
 
     @Override
@@ -118,19 +118,21 @@ public class GuiView extends View
             monopolBoard.updateMoney(event.getPlayerName(), "", event.getPaymentAmount());
         if (isPaymentFromBank(event))
             monopolBoard.updateMoney("", event.getPlayerName(), event.getPaymentAmount());
-        if (!event.isPaymentToOrFromTreasury())
-            monopolBoard.updateMoney(event.getPlayerName(), event.getPaymentToPlayerName(), event.getPaymentAmount());
+        //if (!event.isPaymentToOrFromTreasury())
+            //monopolBoard.updateMoney(event.getPlayerName(), event.getPaymentToPlayerName(), event.getPaymentAmount());
         monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     private boolean isPaymentFromBank(Event event)
     {
-        return event.isPaymentToOrFromTreasury() && !event.isPaymentFromUser();
+        //return event.isPaymentToOrFromTreasury() && !event.isPaymentFromUser();
+        return true;
     }
 
     private boolean isPaymentToBank(Event event)
     {
-        return event.isPaymentToOrFromTreasury() && event.isPaymentFromUser();
+        //return event.isPaymentToOrFromTreasury() && event.isPaymentFromUser();
+        return true;
     }
 
     @Override
