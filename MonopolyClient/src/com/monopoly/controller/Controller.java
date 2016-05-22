@@ -69,12 +69,13 @@ public class Controller
         } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         while (events!= null && !events.isEmpty())
         {
             lastEvent =  events.get(events.size() - 1).getId();
             //NEXT TWO LINES FOR EX. 3
-            // events = engine.getEvents(player.getPlayerID(), lastReceivedEventIds.get(player));
-            // lastReceivedEventIds.replace(player, events[events.length-1].getEventID());
+            //events = engine.getEvents(player.getPlayerID(), lastReceivedEventIds.get(player));
+            //astReceivedEventIds.replace(player, events[events.length-1].getEventID());
             
             view.showEvents(events);
             try {
@@ -133,7 +134,8 @@ public class Controller
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //engine.createGame(GAME_NAME, computerPlayersNumber, humanPlayersNumber);
+        //TODO delete engine create game!!!!!!!!!!!!
+        engine.createGame(GAME_NAME, computerPlayersNumber, humanPlayersNumber);
         addHumanPlayersNames(view.getDistinctHumanPlayerNames(humanPlayersNumber));
     }
 

@@ -2,7 +2,7 @@ package MonopolyGameWeb.logic.engine;
 
 import MonopolyGameWeb.logic.engine.monopolyInitReader.CouldNotReadMonopolyInitReader;
 import MonopolyGameWeb.logic.engine.monopolyInitReader.MonopolyInitReader;
-import MonopolyGameWeb.logic.events.Event;
+import ws.monopoly.Event;
 import MonopolyGameWeb.logic.events.EventList;
 import MonopolyGameWeb.logic.model.DiceRoll;
 import MonopolyGameWeb.logic.model.board.Board;
@@ -15,6 +15,7 @@ import MonopolyGameWeb.logic.model.player.HumanPlayer;
 import MonopolyGameWeb.logic.model.player.Player;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -39,14 +40,15 @@ public class MonopolyEngine implements Engine
     private OnBuyDecisionTaken onBuyDecisionTaken;
 
     @Override
-    public Event[] getEvents(int playerID, int eventID)
+    public List<Event> getEvents(int playerID, int eventID)
     {
         if (eventID < 0 || (events.size() > 0 && eventID >= events.size()))
         {
             throw new InvalidParameterException("eventID should be between 0 and " + events.size());
         }
         int fromIndex = (eventID == 0) ? 0 : eventID + 1;
-        return events.getEventsClone().subList(fromIndex, events.size()).toArray(new Event[events.size() - fromIndex]);
+        
+        return Arrays.asList(events.getEventsClone().subList(fromIndex, events.size()).toArray(new Event[events.size() - fromIndex]));
     }
 
     @Override
