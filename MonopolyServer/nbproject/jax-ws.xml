@@ -2,7 +2,7 @@
 <jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
   <services>
     <service name="monopolWS">
-      <implementation-class>MonopolyGameWeb.ws.monopolWS</implementation-class>
+      <implementation-class>MonopolyServer.ws.monopolWS</implementation-class>
       <wsdl-url>file:/C:/JavaProjects/MonopolyWeb/WSDL%201.0/MonopolyWebServiceService.wsdl</wsdl-url>
       <local-wsdl-file>MonopolyWebServiceService.wsdl</local-wsdl-file>
       <service-name>MonopolyWebServiceService</service-name>
