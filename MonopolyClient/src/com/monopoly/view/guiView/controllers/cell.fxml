@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="80.0" maxWidth="60.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="60.0" style="-fx-font-size: 10;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.PropertyCellController">
+   <children>
+      <Pane maxHeight="80.0" maxWidth="60.0" prefHeight="80.0" prefWidth="60.0">
+         <children>
+            <ImageView fx:id="backImg" fitHeight="55.0" fitWidth="60.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" />
+            <VBox maxHeight="80.0" maxWidth="60.0" prefHeight="80.0" prefWidth="60.0">
+               <children>
+                  <Pane fx:id="propertyGroupColor" maxHeight="25.0" maxWidth="80.0" prefHeight="25.0" prefWidth="60." style="-fx-font-size: 11;">
+                     <children>
+                        <Label fx:id="groupNameLabel" maxHeight="30.0" prefHeight="25.0" prefWidth="60.0" wrapText="true">
+                           <padding>
+                              <Insets left="2.0" right="2.0" />
+                           </padding></Label>
+                     </children>
+                  </Pane>
+                  <Separator prefWidth="200.0" />
+                  <Label fx:id="propertyNameLabel" maxHeight="20.0" prefHeight="18.0" prefWidth="80.0" wrapText="true" />
+                  <Label fx:id="ownerLabel" maxHeight="20.0" prefHeight="18.0" prefWidth="80.0" wrapText="true" />
+                  <HBox maxHeight="20.0" prefHeight="20.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fx:id="houseOneImg" fitHeight="20.0" fitWidth="20.0">
+                           <image>
+                              <Image url="@../../../res/images/house.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="houseTwoImg" fitHeight="20.0" fitWidth="20.0">
+                           <image>
+                              <Image url="@../../../res/images/house.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="houseThreeImg" fitHeight="20.0" fitWidth="20.0">
+                           <image>
+                              <Image url="@../../../res/images/house.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <FlowPane fx:id="playersPane" maxHeight="80.0" maxWidth="60.0" prefHeight="80.0" prefWidth="60.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

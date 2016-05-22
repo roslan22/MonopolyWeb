@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="973.0" snapToPixel="false" stylesheets="@../../res/css/material-design.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.BoardSceneController">
+    <children>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="140.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" rotate="135.0">
+         <image>
+            <Image url="@../../res/images/surprise.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="390.0" layoutY="400.0" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
+         <image>
+            <Image url="@../../res/images/warning.png" />
+         </image>
+      </ImageView>
+      <GridPane fx:id="gridPaneMain" hgap="5.0" layoutX="14.0" layoutY="2.0" prefHeight="700.0" prefWidth="690.0" vgap="5.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="80.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="80.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="75.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+      <Label contentDisplay="CENTER" layoutX="723.0" layoutY="26.0" prefHeight="35.0" prefWidth="88.0" text="Players:" underline="true" />
+      <VBox fx:id="vboxPlayers" layoutX="723.0" layoutY="68.0" prefHeight="132.0" prefWidth="237.0" />
+      <TextArea fx:id="msgTextArea" editable="false" focusTraversable="false" layoutX="723.0" layoutY="249.0" opacity="0.89" pickOnBounds="false" prefHeight="114.0" prefWidth="237.0" style="-fx-font-size: 13px;" wrapText="true">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </TextArea>
+      <Pane fx:id="promtPane" layoutX="723.0" layoutY="500.0" prefHeight="169.0" prefWidth="237.0">
+         <children>
+            <TextArea fx:id="textAreaPromt" cacheShape="false" editable="false" focusTraversable="false" layoutY="2.0" prefHeight="96.0" prefWidth="237.0" scaleShape="false" style="-fx-font-size: 13px;" styleClass="text-area" wrapText="true" />
+            <Button graphicTextGap="2.0" layoutX="14.0" layoutY="111.0" mnemonicParsing="false" onAction="#onYesClicked" prefHeight="35.0" prefWidth="66.0" style="-fx-font-size: 15px;" styleClass="button-raised" text="Yes">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="buttonNo" graphicTextGap="2.0" layoutX="86.0" layoutY="111.0" mnemonicParsing="false" onAction="#onNoClicked" prefHeight="35.0" prefWidth="66.0" style="-fx-font-size: 15px;" styleClass="button-raised" text="No">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="buttonResign" graphicTextGap="2.0" layoutX="157.0" layoutY="111.0" mnemonicParsing="false" onAction="#onResignClicked" prefHeight="35.0" prefWidth="66.0" style="-fx-font-size: 14px;" styleClass="button-raised" text="Resign">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+      <TextArea fx:id="gameMsg" editable="false" focusTraversable="false" layoutX="725.0" layoutY="378.0" prefHeight="75.0" prefWidth="234.0" style="-fx-font-size: 15;" wrapText="true" />
+      <Pane fx:id="surprisePane" layoutX="140.0" layoutY="150.0" maxHeight="150.0" maxWidth="200.0" minHeight="130.0" minWidth="200.0" prefHeight="130.0" prefWidth="200.0" rotate="135.0">
+         <children>
+            <ImageView fx:id="surpriseCard" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../res/images/surprise.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="surpriseText" prefHeight="130.0" prefWidth="200.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="warningPane" layoutX="390.0" layoutY="400.0" prefHeight="130.0" prefWidth="200.0" rotate="-45.0">
+         <children>
+            <ImageView fx:id="warningCard" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../res/images/warning.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="warningText" prefHeight="130.0" prefWidth="200.0" />
+         </children>
+      </Pane>
+      <ImageView fx:id="leftCube" fitHeight="45.0" fitWidth="43.0" layoutX="785.0" layoutY="455.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="rightCube" fitHeight="45.0" fitWidth="43.0" layoutX="840.0" layoutY="455.0" pickOnBounds="true" preserveRatio="true" />
+    </children>
+</AnchorPane>

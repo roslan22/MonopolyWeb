@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="80.0" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="80.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.CornerCellController">
+   <children>
+      <ImageView fx:id="backImg" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="cellNameLabel" layoutY="-1.0" maxHeight="80.0" maxWidth="80.0" prefHeight="80.0" prefWidth="80.0" />
+      <FlowPane fx:id="playersPane" layoutX="-5.0" layoutY="-5.0" maxHeight="80.0" maxWidth="80.0" prefHeight="80.0" prefWidth="80.0" />
+   </children>
+</AnchorPane>

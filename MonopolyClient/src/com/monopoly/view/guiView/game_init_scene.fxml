@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="440.0" stylesheets="@../../res/css/material-design.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.GameInitSceneController">
+   <children>
+      <Label fx:id="messageLabel" prefHeight="25.0" prefWidth="436.0" style="-fx-text-fill: #FFD700; -fx-background-color: #333333; -fx-font-family: Roboto; -fx-font-weight: bold; -fx-opacity: 1;" textFill="GOLD" visible="false">
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding>
+      </Label>
+      <VBox layoutX="132.0" layoutY="8.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <children>
+            <Label style="-fx-text-fill: black;" styleClass="title-label" text="Monopoly">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="130.0" prefWidth="130.0" />
+                <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints fillHeight="false" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Human Players:" />
+                  <Label text="Computer Players:" GridPane.rowIndex="2" />
+                  <HBox prefHeight="70.0" prefWidth="132.0" styleClass="card" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <children>
+                        <Button fx:id="addHumanPlayerButton" mnemonicParsing="false" onMouseClicked="#onAddHumanPlayer" prefHeight="30.0" prefWidth="26.0" text="+" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="humanPlayersLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="30.0" prefHeight="44.0" prefWidth="80.0" text="0" textAlignment="CENTER" />
+                        <Button fx:id="removeHumanPlayerButton" mnemonicParsing="false" onMouseClicked="#onRemoveHumanPlayer" prefHeight="30.0" prefWidth="26.0" text="-" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="70.0" prefWidth="132.0" styleClass="card" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <children>
+                        <Button fx:id="addComputerPlayerButton" mnemonicParsing="false" onMouseClicked="#onAddComputerPlayer" prefHeight="30.0" prefWidth="26.0" text="+" />
+                        <Label fx:id="computerPlayersLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="30.0" prefHeight="44.0" prefWidth="80.0" text="0" textAlignment="CENTER" />
+                        <Button fx:id="removeComputerPlayerButton" mnemonicParsing="false" onMouseClicked="#onRemoveComputerPlayer" prefHeight="30.0" prefWidth="26.0" text="-" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets left="10.0" right="40.0" top="5.0" />
+               </padding>
+            </GridPane>
+            <Separator prefWidth="200.0" />
+            <HBox prefHeight="16.0" prefWidth="395.0">
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+               <children>
+                  <Label text="External XML:" />
+                  <Label fx:id="selectedXMLLabel" prefWidth="200.0" style="-fx-border-color: grey; -fx-border-radius: 2px; -fx-background-color: #F0F0F0;">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Button maxHeight="10.0" maxWidth="10.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onMouseClicked="#onExternalXMLButtonPressed" prefHeight="10.0" prefWidth="10.0" style="-fx-padding: 0;" styleClass="button-raised" text="...">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="clearXMLChoiceButton" maxHeight="10.0" maxWidth="10.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onMouseClicked="#onClearXMLButtonPressed" prefHeight="10.0" prefWidth="10.0" style="-fx-padding: 0;" styleClass="button-raised" text="X">
+                     <HBox.margin>
+                        <Insets left="2.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Separator>
+            <FlowPane alignment="BOTTOM_RIGHT" columnHalignment="RIGHT" prefHeight="59.0" prefWidth="393.0">
+               <children>
+                  <Button fx:id="nextButton" defaultButton="true" mnemonicParsing="false" onMouseClicked="#onNextButtonPressed" text="Next">
+                     <FlowPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </FlowPane.margin>
+                  </Button>
+               </children>
+            </FlowPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -46,7 +46,7 @@ public class monopolWS {
 
     public int joinGame(java.lang.String gameName, java.lang.String playerName) throws ws.monopoly.InvalidParameters_Exception, ws.monopoly.GameDoesNotExists_Exception {
         //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return 888;
     }
 
     public ws.monopoly.PlayerDetails getPlayerDetails(int playerId) throws ws.monopoly.GameDoesNotExists_Exception, ws.monopoly.InvalidParameters_Exception {
