@@ -42,13 +42,21 @@ public class MonopolyEngine implements Engine
     @Override
     public List<Event> getEvents(int playerID, int eventID)
     {
+        List<Event> eventsList = new ArrayList<Event>();
         if (eventID < 0 || (events.size() > 0 && eventID >= events.size()))
         {
             throw new InvalidParameterException("eventID should be between 0 and " + events.size());
         }
         int fromIndex = (eventID == 0) ? 0 : eventID + 1;
+        //fromIndex = 0;
+       
+        Event[] arr = events.getEventsClone().subList(fromIndex, events.size()).toArray(new Event[events.size() - fromIndex]);
+        for(int i=0; i < arr.length; i++)
+        {
+            eventsList.add(arr[i]);
+        }
         
-        return Arrays.asList(events.getEventsClone().subList(fromIndex, events.size()).toArray(new Event[events.size() - fromIndex]));
+        return eventsList;
     }
 
     @Override

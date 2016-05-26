@@ -1,5 +1,8 @@
 package MonopolyGameWeb.logic.events;
 
+import ws.monopoly.EventType;
+import ws.monopoly.Event;
+
 public class EventBuilder
 {
     private int       eventID;
@@ -97,6 +100,23 @@ public class EventBuilder
 
     public Event createGameEvent()
     {
+        Event event = new Event();
+        event.setId(eventID);
+        event.setEventMessage(eventMessage);
+        event.setType(eventType);
+        event.setPlayerMove(playerMove);
+        event.setPlayerName(playerName);
+        event.setFirstDiceResult(firstDiceResult);
+        event.setSecondDiceResult(secondDiceResult);
+        event.setPaymemtFromUser(paymentFromUser);
+        event.setPaymentAmount(paymentAmount);
+        event.setPaymentToPlayerName(paymentToPlayerName);
+
+       
+        //event.setTimeout(eventID);
+        //event.setBoardSquareID(eventID);
+        //event.setNextBoardSquareID(eventID);
+        /*
         return new Event(eventID,
                          timeoutCount,
                          eventType,
@@ -111,5 +131,7 @@ public class EventBuilder
                          paymentFromUser,
                          paymentToPlayerName,
                          paymentAmount);
+        */
+        return event;
     }
 }

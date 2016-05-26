@@ -10,7 +10,6 @@ import MonopolyGameWeb.logic.engine.MonopolyEngine;
 import javax.jws.WebService;
 import ws.monopoly.Event;
 
-
 /**
  *
  * @author Ruslan
@@ -18,7 +17,9 @@ import ws.monopoly.Event;
 @WebService(serviceName = "MonopolyWebServiceService", portName = "MonopolyWebServicePort", endpointInterface = "ws.monopoly.MonopolyWebService", targetNamespace = "http://monopoly.ws/", wsdlLocation = "WEB-INF/wsdl/monopolWS/MonopolyWebServiceService.wsdl")
 public class monopolWS {
     Engine engine;
-    
+    public static String DEFAULT_XML_PATH  = "configs/monopoly_config.xml";
+
+   
     public java.util.List<Event> getEvents(int eventId, int playerId) throws ws.monopoly.InvalidParameters_Exception {
         //TODO implement this method
         return engine.getEvents(playerId, eventId);
@@ -37,6 +38,8 @@ public class monopolWS {
     public void createGame(int computerizedPlayers, int humanPlayers, java.lang.String name) throws ws.monopoly.DuplicateGameName_Exception, ws.monopoly.InvalidParameters_Exception {
         //TODO implement this method
         engine = new MonopolyEngine();
+        tryToLoadBoardFromXML();
+        engine.createGame(name, computerizedPlayers, humanPlayers);
     }
 
     public ws.monopoly.GameDetails getGameDetails(java.lang.String gameName) throws ws.monopoly.GameDoesNotExists_Exception {
@@ -72,6 +75,23 @@ public class monopolWS {
     public java.util.List<ws.monopoly.PlayerDetails> getPlayersDetails(java.lang.String gameName) throws ws.monopoly.GameDoesNotExists_Exception {
         //TODO implement this method
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+    
+
+    private void tryToLoadBoardFromXML() {
+        String xmlPath = DEFAULT_XML_PATH;
+        try
+        {
+            XmlMonopolyInitReader monopolyInitReader = XmlMonopolyInitReader.getInstance(xmlPath);
+            monopolyInitReader.read();
+            engine.initializeBoard(monopolyInitReader);
+            //view.setDrawables(monopolyInitReader.getDrawables());
+        } 
+        catch (Exception exc)
+        {
+            System.out.println("trying to load again" + exc.getMessage());
+            tryToLoadBoardFromXML();
+        }
     }
     
 }

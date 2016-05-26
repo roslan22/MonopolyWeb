@@ -1,31 +1,29 @@
-package com.monopoly.controller;
+package MonopolyGameWeb.ws;
 
-import com.monopoly.logic.engine.monopolyInitReader.CouldNotReadMonopolyInitReader;
-import com.monopoly.logic.engine.monopolyInitReader.MonopolyInitReader;
-import com.monopoly.logic.model.board.KeyCells;
-import com.monopoly.logic.model.board.KeyCellsBuilder;
-import com.monopoly.logic.model.card.AlertCard;
-import com.monopoly.logic.model.card.CardPack;
-import com.monopoly.logic.model.card.GotoAlertCard;
-import com.monopoly.logic.model.card.GotoGameStartCard;
-import com.monopoly.logic.model.card.GotoJailCard;
-import com.monopoly.logic.model.card.GotoSurpriseCard;
-import com.monopoly.logic.model.card.MoneyEarnCard;
-import com.monopoly.logic.model.card.MoneyPenaltyCard;
-import com.monopoly.logic.model.card.OutOfJailCard;
-import com.monopoly.logic.model.card.SurpriseCard;
-import com.monopoly.logic.model.cell.AlertCell;
-import com.monopoly.logic.model.cell.Cell;
-import com.monopoly.logic.model.cell.City;
-import com.monopoly.logic.model.cell.Company;
-import com.monopoly.logic.model.cell.Jail;
-import com.monopoly.logic.model.cell.JailGate;
-import com.monopoly.logic.model.cell.Parking;
-import com.monopoly.logic.model.cell.PropertyGroup;
-import com.monopoly.logic.model.cell.RoadStart;
-import com.monopoly.logic.model.cell.SurpriseCell;
-import com.monopoly.view.guiView.guiEntities.GuiCell;
-import com.monopoly.view.guiView.guiEntities.GuiCellBuilder;
+import MonopolyGameWeb.logic.engine.monopolyInitReader.CouldNotReadMonopolyInitReader;
+import MonopolyGameWeb.logic.engine.monopolyInitReader.MonopolyInitReader;
+import MonopolyGameWeb.logic.model.board.KeyCells;
+import MonopolyGameWeb.logic.model.board.KeyCellsBuilder;
+import MonopolyGameWeb.logic.model.card.AlertCard;
+import MonopolyGameWeb.logic.model.card.CardPack;
+import MonopolyGameWeb.logic.model.card.GotoAlertCard;
+import MonopolyGameWeb.logic.model.card.GotoGameStartCard;
+import MonopolyGameWeb.logic.model.card.GotoJailCard;
+import MonopolyGameWeb.logic.model.card.GotoSurpriseCard;
+import MonopolyGameWeb.logic.model.card.MoneyEarnCard;
+import MonopolyGameWeb.logic.model.card.MoneyPenaltyCard;
+import MonopolyGameWeb.logic.model.card.OutOfJailCard;
+import MonopolyGameWeb.logic.model.card.SurpriseCard;
+import MonopolyGameWeb.logic.model.cell.AlertCell;
+import MonopolyGameWeb.logic.model.cell.Cell;
+import MonopolyGameWeb.logic.model.cell.City;
+import MonopolyGameWeb.logic.model.cell.Company;
+import MonopolyGameWeb.logic.model.cell.Jail;
+import MonopolyGameWeb.logic.model.cell.JailGate;
+import MonopolyGameWeb.logic.model.cell.Parking;
+import MonopolyGameWeb.logic.model.cell.PropertyGroup;
+import MonopolyGameWeb.logic.model.cell.RoadStart;
+import MonopolyGameWeb.logic.model.cell.SurpriseCell;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -129,7 +127,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
 
     public static XmlMonopolyInitReader getInstance(String xmlFilePath)
     {
-        xmlFilePath = xmlFilePath == null ? Controller.DEFAULT_XML_PATH : xmlFilePath;
+        xmlFilePath = xmlFilePath == null ? monopolWS.DEFAULT_XML_PATH : xmlFilePath;
         if (xmlMonopolyInitReader == null || !xmlMonopolyInitReader.getFilePath().equals(xmlFilePath))
         {
             xmlMonopolyInitReader = new XmlMonopolyInitReader(xmlFilePath);
@@ -234,19 +232,22 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
             }
         }
     }
-
+    
+   /*
     @Override
     public List<? extends GuiCell> getDrawables()
     {
-        return getCells().stream()
+         return getCells().stream()
                 .map(c -> new GuiCellBuilder().setPropertyName(c.getPropertyName())
                                                 .setGroupName(c.getGroupName())
                                                 .setGroupColor(c.getGroupColor())
                                                 .setHousesOwned(c.getHousesOwned())
                                                 .setOwnerName("")
                                                 .setPropertySummary(c.getPropertySummary()).createGuiCell()).collect(
-                        Collectors.toList());
+                        Collectors.toList()); 
+    
     }
+*/
 
     private void parseMonopolyXML(Document document)
     {

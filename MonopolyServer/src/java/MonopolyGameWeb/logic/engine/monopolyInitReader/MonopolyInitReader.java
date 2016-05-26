@@ -23,5 +23,5 @@ public interface MonopolyInitReader
 
     void read() throws CouldNotReadMonopolyInitReader;
 
-    List<? extends DrawableProperty> getDrawables();
+   // List<? extends DrawableProperty> getDrawables();
 }

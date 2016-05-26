@@ -1,8 +1,6 @@
 package com.monopoly.view.guiView;
 
 import com.monopoly.controller.Controller;
-import com.monopoly.controller.XmlMonopolyInitReader;
-import com.monopoly.logic.engine.MonopolyEngine;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
 import com.monopoly.view.guiView.controllers.GetNamesSceneController;
@@ -10,6 +8,8 @@ import com.monopoly.view.guiView.guiEntities.GuiCell;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
 import com.monopoly.view.playerDescisions.PlayerResign;
+import com.monopoly.ws.MonopolyWebService;
+import com.monopoly.ws.MonopolyWebServiceService;
 
 import java.awt.geom.IllegalPathStateException;
 import java.io.File;
@@ -42,6 +42,9 @@ public class MonopolBoard extends Application
     private List<String> playerNames;
     private Boolean isNewGameRequired = true;
     private Scene currentBoardScene;
+    MonopolyWebServiceService service;
+    MonopolyWebService gameWebService;
+
 
     Procedure startNewGameProcedure      = this::startAnotherGame;
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
@@ -83,8 +86,8 @@ public class MonopolBoard extends Application
         primaryStage.setScene(new Scene(getRoot(gameInitXMLLoader)));
 
         GameInitSceneController gameInitController = gameInitXMLLoader.getController();
-        gameInitController.setXmlValidator(xml -> XmlMonopolyInitReader
-                .validateXMLAgainstXSD(xml, XmlMonopolyInitReader.XSD_FILE_PATH));
+        //gameInitController.setXmlValidator(xml -> XmlMonopolyInitReader
+               // .validateXMLAgainstXSD(xml, XmlMonopolyInitReader.XSD_FILE_PATH));
         gameInitController.setNextListener(() -> endGameInit(gameInitController));
         primaryStage.show();
     }
@@ -92,7 +95,7 @@ public class MonopolBoard extends Application
     private void endGameInit(GameInitSceneController gameInitController)
     {
         externalXML = gameInitController.getXMLFile();
-        XmlMonopolyInitReader.getInstance(externalXML != null ? externalXML.getPath() : null).readInBackground();
+        //XmlMonopolyInitReader.getInstance(externalXML != null ? externalXML.getPath() : null).readInBackground();
         humanPlayers = gameInitController.getHumanPlayers();
         computerPlayers = gameInitController.getComputerPlayers();
         askForHumanPlayersNames(gameInitController.getHumanPlayers());
@@ -183,8 +186,9 @@ public class MonopolBoard extends Application
 
     private void startController()
     {
+        initWebServices();
         GuiView guiView = new GuiView(this);
-        Controller controller = new Controller(guiView, new MonopolyEngine());
+        Controller controller = new Controller(guiView, gameWebService);
         controller.play();
     }
 
@@ -287,6 +291,11 @@ public class MonopolBoard extends Application
     {
         isNewGameRequired = false;
         Platform.exit();
+    }
+    
+    private void initWebServices() {
+        service = new MonopolyWebServiceService();
+        gameWebService = service.getMonopolyWebServicePort();
     }
 
 }

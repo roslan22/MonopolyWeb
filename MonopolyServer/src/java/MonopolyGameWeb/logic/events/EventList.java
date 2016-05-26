@@ -2,9 +2,11 @@ package MonopolyGameWeb.logic.events;
 
 import MonopolyGameWeb.logic.model.DiceRoll;
 import MonopolyGameWeb.logic.model.player.Player;
+import ws.monopoly.Event;
 
 import java.util.ArrayList;
 import java.util.List;
+import ws.monopoly.EventType;
 
 public class EventList
 {
@@ -14,6 +16,11 @@ public class EventList
     public List<Event> getEventsClone()
     {
         return new ArrayList<>(events);
+    }
+    
+    public List<Event> getEvents()
+    {
+        return events;
     }
 
     public void addDiceRollEvent(Player player, DiceRoll diceRoll)
@@ -122,7 +129,7 @@ public class EventList
 
     public void addPlayerUsedOutOfJailCard(Player player)
     {
-        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PLAYER_USED_OUT_OF_JAIL_CARD)
+        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PLAYER_USED_GET_OUT_OF_JAIL_CARD)
                 .setPlayerName(player.getName()).setEventMessage(player.getName() + " used out of jail card")
                 .createGameEvent();
         events.add(e);
@@ -142,7 +149,7 @@ public class EventList
         String eventMessage = player
                 .getName() + " would you like to buy " + propertyName + " in " + propertyGroupName + " for ₪" + price + "? You now own ₪" + player
                 .getMoneyAmount();
-        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROMPT_PLAYER_TO_BUY_ASSET)
+        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROPMPT_PLAYER_TO_BY_HOUSE)
                 .setEventMessage(eventMessage).setPlayerName(player.getName()).setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
@@ -151,14 +158,14 @@ public class EventList
     {
         String eventMessage = player.getName() + " would you like to buy house in " + cityName + " for ₪" + housePrice +
                 "? You now own ₪" + player.getMoneyAmount();
-        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROMPT_PLAYER_TO_BUY_HOUSE)
+        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROPMPT_PLAYER_TO_BY_HOUSE)
                 .setEventMessage(eventMessage).setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
 
     public void addHouseBoughtEvent(Player player, String cityName, int squareID)
     {
-        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.HOUSE_BOUGHT_MESSAGE)
+        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.HOUSE_BOUGHT)
                 .setPlayerName(player.getName()).setEventMessage(player.getName() + " bought house in" + cityName)
                 .setBoardSquareID(squareID).createGameEvent();
         events.add(e);
@@ -166,7 +173,7 @@ public class EventList
 
     public void addAssertBoughtEvent(Player player, String assetName, int squareID)
     {
-        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.ASSET_BOUGHT_MESSAGE)
+        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.HOUSE_BOUGHT)
                 .setPlayerName(player.getName()).setEventMessage(player.getName() + " bought " + assetName)
                 .setBoardSquareID(squareID).createGameEvent();
         events.add(e);
