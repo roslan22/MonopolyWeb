@@ -59,7 +59,7 @@ public class Controller
     {
         List<com.monopoly.ws.Event> events = null;
         try {
-            events = gameWebService.getEvents(DUMMY_PLAYER_ID, lastEvent);
+            events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
         } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -73,7 +73,7 @@ public class Controller
             
             view.showEvents(events);
             try {
-                events = gameWebService.getEvents(DUMMY_PLAYER_ID, lastEvent);
+                events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
             } catch (InvalidParameters_Exception ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
