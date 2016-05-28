@@ -24,6 +24,7 @@ import MonopolyGameWeb.logic.model.cell.Parking;
 import MonopolyGameWeb.logic.model.cell.PropertyGroup;
 import MonopolyGameWeb.logic.model.cell.RoadStart;
 import MonopolyGameWeb.logic.model.cell.SurpriseCell;
+import static MonopolyGameWeb.ws.monopolWS.DEFAULT_XSD_PATH;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -36,11 +37,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
@@ -51,6 +54,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import jdk.internal.util.xml.impl.Input;
 
 public class XmlMonopolyInitReader implements MonopolyInitReader
 {
@@ -123,6 +127,19 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     private XmlMonopolyInitReader(String xmlFilePath)
     {
         this.xmlFilePath = xmlFilePath;
+    }
+    
+    public static String getXmlContent(String path)
+    {
+        try {
+            InputStream is = XmlMonopolyInitReader.class.getResourceAsStream(path);
+            Scanner s = new Scanner(is).useDelimiter("\\A");
+            String cont = s.hasNext() ? s.next() : "";
+            is.close();
+            return cont;
+        } catch (Exception ex) {
+            return "File Not Found";
+        }
     }
 
     public static XmlMonopolyInitReader getInstance(String xmlFilePath)
@@ -232,22 +249,6 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
             }
         }
     }
-    
-   /*
-    @Override
-    public List<? extends GuiCell> getDrawables()
-    {
-         return getCells().stream()
-                .map(c -> new GuiCellBuilder().setPropertyName(c.getPropertyName())
-                                                .setGroupName(c.getGroupName())
-                                                .setGroupColor(c.getGroupColor())
-                                                .setHousesOwned(c.getHousesOwned())
-                                                .setOwnerName("")
-                                                .setPropertySummary(c.getPropertySummary()).createGuiCell()).collect(
-                        Collectors.toList()); 
-    
-    }
-*/
 
     private void parseMonopolyXML(Document document)
     {

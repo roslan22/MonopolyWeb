@@ -78,8 +78,8 @@ public interface MonopolyWebService {
      * @param humanPlayers
      * @param name
      * @param computerizedPlayers
-     * @throws DuplicateGameName_Exception
      * @throws InvalidParameters_Exception
+     * @throws DuplicateGameName_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createGame", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.CreateGame")

@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "MonopolyWebServiceService", targetNamespace = "http://monopoly.ws/", wsdlLocation = "file:/C:/JavaProjects/MonopolyWeb/MonopolyServer/src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService.wsdl")
+@WebServiceClient(name = "MonopolyWebServiceService", targetNamespace = "http://monopoly.ws/", wsdlLocation = "file:/C:/Develop/NetBeans/MonopolyWeb/MonopolyServer/src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService.wsdl")
 public class MonopolyWebServiceService
     extends Service
 {
@@ -30,7 +30,7 @@ public class MonopolyWebServiceService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/C:/JavaProjects/MonopolyWeb/MonopolyServer/src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService.wsdl");
+            url = new URL("file:/C:/Develop/NetBeans/MonopolyWeb/MonopolyServer/src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

@@ -7,6 +7,11 @@ package MonopolyGameWeb.ws;
 
 import MonopolyGameWeb.logic.engine.Engine;
 import MonopolyGameWeb.logic.engine.MonopolyEngine;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jws.WebService;
 import ws.monopoly.Event;
 
@@ -16,28 +21,34 @@ import ws.monopoly.Event;
  */
 @WebService(serviceName = "MonopolyWebServiceService", portName = "MonopolyWebServicePort", endpointInterface = "ws.monopoly.MonopolyWebService", targetNamespace = "http://monopoly.ws/", wsdlLocation = "WEB-INF/wsdl/monopolWS/MonopolyWebServiceService.wsdl")
 public class monopolWS {
-    Engine engine;
-    public static String DEFAULT_XML_PATH  = "configs/monopoly_config.xml";
 
-   
+    private Engine engine;
+    public static String DEFAULT_XML_PATH = "configs/monopoly_config.xml";
+    public static String DEFAULT_XSD_PATH = "configs/monopoly_config.xsd";
+
+    private Engine getEngine()
+    {
+        if (engine == null)
+            engine = new MonopolyEngine();
+        return engine;
+    }
+    
     public java.util.List<Event> getEvents(int eventId, int playerId) throws ws.monopoly.InvalidParameters_Exception {
         //TODO implement this method
         return engine.getEvents(playerId, eventId);
     }
 
     public java.lang.String getBoardSchema() {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return XmlMonopolyInitReader.getXmlContent(DEFAULT_XSD_PATH);
     }
 
     public java.lang.String getBoardXML() {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return XmlMonopolyInitReader.getXmlContent(DEFAULT_XML_PATH);
     }
 
     public void createGame(int computerizedPlayers, int humanPlayers, java.lang.String name) throws ws.monopoly.DuplicateGameName_Exception, ws.monopoly.InvalidParameters_Exception {
         //TODO implement this method
-        engine = new MonopolyEngine();
+        engine = getEngine();
         tryToLoadBoardFromXML();
         engine.createGame(name, computerizedPlayers, humanPlayers);
     }
@@ -64,7 +75,7 @@ public class monopolWS {
 
     public void buy(int arg0, int arg1, boolean arg2) {
         //TODO implement this method
-       engine.buy(arg1, arg1, arg2);
+        engine.buy(arg1, arg1, arg2);
     }
 
     public void resign(int playerId) throws ws.monopoly.InvalidParameters_Exception {
@@ -76,22 +87,18 @@ public class monopolWS {
         //TODO implement this method
         throw new UnsupportedOperationException("Not implemented yet.");
     }
-    
 
     private void tryToLoadBoardFromXML() {
         String xmlPath = DEFAULT_XML_PATH;
-        try
-        {
+        try {
             XmlMonopolyInitReader monopolyInitReader = XmlMonopolyInitReader.getInstance(xmlPath);
             monopolyInitReader.read();
             engine.initializeBoard(monopolyInitReader);
             //view.setDrawables(monopolyInitReader.getDrawables());
-        } 
-        catch (Exception exc)
-        {
+        } catch (Exception exc) {
             System.out.println("trying to load again" + exc.getMessage());
             tryToLoadBoardFromXML();
         }
     }
-    
+
 }
