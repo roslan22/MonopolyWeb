@@ -10,10 +10,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Controller
-{
-    private View   view;
-    //private Engine engine;
+public class Controller {
+
+    private View view;
     private int lastEvent = 0;
     private boolean isAnotherGame = false;
     MonopolyWebService gameWebService;
@@ -25,52 +24,46 @@ public class Controller
     public void setIsAnotherGame(boolean isAnotherGame) {
         this.isAnotherGame = isAnotherGame;
     }
-    public static       String GAME_NAME            = "Monopoly";
-    public static final int    MAXIMUM_GAME_PLAYERS = 6;
-    public static       int    DUMMY_PLAYER_ID      = 1;
-    public static       String DEFAULT_XML_PATH  = "configs/monopoly_config.xml";
+    public static String GAME_NAME = "Monopoly";
+    public static final int MAXIMUM_GAME_PLAYERS = 6;
+    public static int DUMMY_PLAYER_ID = 1;
+    public static String DEFAULT_XML_PATH = "configs/monopoly_config.xml";
 
-    public Controller(View view, MonopolyWebService gameWebService)
-    {
+    public Controller(View view, MonopolyWebService gameWebService) {
         this.view = view;
         this.gameWebService = gameWebService;
         initView(view);
     }
 
-    private void initView(View view)
-    {
+    private void initView(View view) {
         view.setPlayerBuyHouseDecision((eventID, answer) -> buy(DUMMY_PLAYER_ID, eventID, answer));
         view.setPlayerBuyAssetDecision((eventID, answer) -> buy(DUMMY_PLAYER_ID, eventID, answer));
         view.setPlayerResign(() -> resign(DUMMY_PLAYER_ID));
     }
 
-    public void play()
-    {
+    public void play() {
         initGame();
         runEventsLoop();
     }
-    
-    public void continueGameAfterPromt()
-    {
+
+    public void continueGameAfterPromt() {
         runEventsLoop();
     }
-    
-    private void runEventsLoop() 
-    {
+
+    private void runEventsLoop() {
         List<com.monopoly.ws.Event> events = null;
         try {
             events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
         } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        while (events!= null && !events.isEmpty())
-        {
-            lastEvent =  events.get(events.size() - 1).getId();
+
+        while (events != null && !events.isEmpty()) {
+            lastEvent = events.get(events.size() - 1).getId();
             //NEXT TWO LINES FOR EX. 3
             //events = engine.getEvents(player.getPlayerID(), lastReceivedEventIds.get(player));
             //lastReceivedEventIds.replace(player, events[events.length-1].getEventID());
-            
+
             view.showEvents(events);
             try {
                 events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
@@ -79,45 +72,23 @@ public class Controller
             }
         }
     }
-        
-    private void initGame()
-    {
-        //initBoard();
+
+    private void initGame() {
+        initBoard();
         createPlayers();
     }
 
-    private void  initBoard()
-    {
-        String xmlPath = null;
-        //xmlPath = view.loadExternalXmlPath();
-        
-        if(xmlPath == null || xmlPath.isEmpty())
-        {
-            xmlPath = DEFAULT_XML_PATH;
-        }      
-        
-        //tryToLoadBoardFromXML(xmlPath);
-    }
-
-/*
-    private void tryToLoadBoardFromXML(String xmlPath) {
-        try
-        {
-            XmlMonopolyInitReader monopolyInitReader = XmlMonopolyInitReader.getInstance(xmlPath);
-            gameWebService.getBoardXML()
+    private void initBoard() {
+        try {
+            XmlMonopolyInitReader monopolyInitReader = new XmlMonopolyInitReader(gameWebService.getBoardXML());
             monopolyInitReader.read();
-            //TODO change initializeBoard Component
             view.setDrawables(monopolyInitReader.getDrawables());
-        } catch (CouldNotReadMonopolyInitReader couldNotReadMonopolyInitReader)
-        {
-            System.out.println("trying to load again" + couldNotReadMonopolyInitReader.getMessage());
-            initBoard();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
-*/
-    private void createPlayers()
-    {
+
+    private void createPlayers() {
         int humanPlayersNumber = view.getHumanPlayersNumber(MAXIMUM_GAME_PLAYERS);
         int computerPlayersNumber = view.getComputerPlayersNumber(MAXIMUM_GAME_PLAYERS - humanPlayersNumber);
 
@@ -134,10 +105,8 @@ public class Controller
         addHumanPlayersNames(view.getDistinctHumanPlayerNames(humanPlayersNumber));
     }
 
-    private void addHumanPlayersNames(List<String> humanPlayersNames)
-    {
-        for(String name : humanPlayersNames)
-        {
+    private void addHumanPlayersNames(List<String> humanPlayersNames) {
+        for (String name : humanPlayersNames) {
             try {
                 gameWebService.joinGame(GAME_NAME, name);
             } catch (GameDoesNotExists_Exception ex) {
@@ -151,14 +120,12 @@ public class Controller
         }); */
     }
 
-    private void buy(int playerID, int eventID, boolean answer)
-    {
+    private void buy(int playerID, int eventID, boolean answer) {
         gameWebService.buy(playerID, eventID, answer);
         continueGameAfterPromt();
     }
 
-    private void resign(int playerID)
-    {
+    private void resign(int playerID) {
         try {
             gameWebService.resign(playerID);
         } catch (InvalidParameters_Exception ex) {
@@ -166,5 +133,4 @@ public class Controller
         }
         continueGameAfterPromt();
     }
-
 }

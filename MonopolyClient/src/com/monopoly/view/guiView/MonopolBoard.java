@@ -86,8 +86,6 @@ public class MonopolBoard extends Application
         primaryStage.setScene(new Scene(getRoot(gameInitXMLLoader)));
 
         GameInitSceneController gameInitController = gameInitXMLLoader.getController();
-        //gameInitController.setXmlValidator(xml -> XmlMonopolyInitReader
-               // .validateXMLAgainstXSD(xml, XmlMonopolyInitReader.XSD_FILE_PATH));
         gameInitController.setNextListener(() -> endGameInit(gameInitController));
         primaryStage.show();
     }
