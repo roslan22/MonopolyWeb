@@ -7,6 +7,9 @@ import MonopolyGameWeb.logic.model.cell.City;
 import MonopolyGameWeb.logic.model.cell.Jail;
 import MonopolyGameWeb.logic.model.cell.Parking;
 import MonopolyGameWeb.logic.model.cell.Property;
+import ws.monopoly.PlayerDetails;
+import ws.monopoly.PlayerStatus;
+import ws.monopoly.PlayerType;
 
 public abstract class Player
 {
@@ -18,6 +21,7 @@ public abstract class Player
     private int money = START_MONEY_AMOUNT;
     private Cell          currentCell;
     private OutOfJailCard outOfJailCard;
+    private PlayerStatus playerStatus = PlayerStatus.JOINED;
 
     public Player(String name, int playerID, MonopolyEngine engine)
     {
@@ -25,7 +29,12 @@ public abstract class Player
         this.playerID = playerID;
         this.engine = engine;
     }
-
+    
+    public void setPlayerStatus(PlayerStatus playerStatus)
+    {
+        this.playerStatus = playerStatus;
+    }
+    
     public String getName()
     {
         return name;
@@ -160,4 +169,19 @@ public abstract class Player
 
         return getName().equals(player.getName());
     }
+
+    public PlayerDetails getDetails() {
+        PlayerDetails pd = new PlayerDetails();
+        pd.setMoney(money);
+        pd.setName(name);
+        pd.setStatus(getPlayerStatus());
+        pd.setType(getPlayerType());
+        return pd;
+    }
+
+    private PlayerStatus getPlayerStatus() {
+        return playerStatus;
+    }
+    
+    public abstract PlayerType getPlayerType();
 }

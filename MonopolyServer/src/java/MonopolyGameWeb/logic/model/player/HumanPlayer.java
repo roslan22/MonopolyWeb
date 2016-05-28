@@ -3,6 +3,8 @@ package MonopolyGameWeb.logic.model.player;
 import MonopolyGameWeb.logic.engine.MonopolyEngine;
 import MonopolyGameWeb.logic.model.cell.City;
 import MonopolyGameWeb.logic.model.cell.Property;
+import com.sun.scenario.effect.impl.state.LinearConvolveRenderState;
+import ws.monopoly.PlayerType;
 
 public class HumanPlayer extends Player
 {
@@ -40,4 +42,11 @@ public class HumanPlayer extends Player
             }
         });
     }
+
+    @Override
+    public PlayerType getPlayerType() {
+        return PlayerType.HUMAN;
+    }
+    
+    
 }

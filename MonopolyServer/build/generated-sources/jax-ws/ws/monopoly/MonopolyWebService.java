@@ -136,8 +136,8 @@ public interface MonopolyWebService {
      * @param playerName
      * @return
      *     returns int
-     * @throws InvalidParameters_Exception
      * @throws GameDoesNotExists_Exception
+     * @throws InvalidParameters_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -160,8 +160,8 @@ public interface MonopolyWebService {
      * @param playerId
      * @return
      *     returns ws.monopoly.PlayerDetails
-     * @throws InvalidParameters_Exception
      * @throws GameDoesNotExists_Exception
+     * @throws InvalidParameters_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")

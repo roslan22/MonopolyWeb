@@ -7,6 +7,7 @@ import MonopolyGameWeb.logic.model.cell.Property;
 import MonopolyGameWeb.logic.model.cell.PropertyGroup;
 
 import java.util.stream.Collectors;
+import ws.monopoly.PlayerType;
 
 public class ComputerPlayer extends Player
 {
@@ -126,5 +127,10 @@ public class ComputerPlayer extends Player
          * */
         engine.addHouseBoughtEvent(this, city);
         city.buyHouse(this);
+    }
+
+    @Override
+    public PlayerType getPlayerType() {
+        return PlayerType.COMPUTER;
     }
 }

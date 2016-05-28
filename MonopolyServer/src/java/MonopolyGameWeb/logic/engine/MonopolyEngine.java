@@ -21,6 +21,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import ws.monopoly.EventType;
+import ws.monopoly.GameDetails;
+import ws.monopoly.GameStatus;
+import ws.monopoly.InvalidParameters;
+import ws.monopoly.InvalidParameters_Exception;
+import ws.monopoly.PlayerDetails;
+import ws.monopoly.PlayerStatus;
 
 public class MonopolyEngine implements Engine
 {
@@ -38,7 +45,16 @@ public class MonopolyEngine implements Engine
 
     private EventList events = new EventList();
     private OnBuyDecisionTaken onBuyDecisionTaken;
-
+    private String gameName = "";
+    private int computerPlayers;
+    private int humanPlayers;
+    
+    @Override
+    public String getGameName()
+    {
+        return gameName;
+    }
+    
     @Override
     public List<Event> getEvents(int playerID, int eventID)
     {
@@ -62,17 +78,20 @@ public class MonopolyEngine implements Engine
     @Override
     public void createGame(String gameName, int computerPlayers, int humanPlayers)
     {
+        this.gameName = gameName;
+        this.computerPlayers = computerPlayers;
+        this.humanPlayers = humanPlayers;
         numberOfPlayers = computerPlayers + humanPlayers;
         createComputerPlayers(computerPlayers);
         startGame();
     }
 
     @Override
-    public int joinGame(String gameName, String playerName)
+    public int joinGame(String gameName, String playerName) throws InvalidParameters_Exception
     {
         if (players.stream().anyMatch(player -> player.getName().equals(playerName)))
         {
-            throw new PlayerNameAlreadyExists();
+            throw new InvalidParameters_Exception("Name already exists", new InvalidParameters());
         }
 
         HumanPlayer newPlayer = new HumanPlayer(playerName, players.size(), this);
@@ -90,8 +109,10 @@ public class MonopolyEngine implements Engine
     }
 
     @Override
-    public void resign(int playerID)
+    public void resign(int playerID) throws InvalidParameters_Exception
     {
+        if (currentPlayer.getPlayerID() != playerID)
+            throw  new InvalidParameters_Exception("Invalid playerID", new InvalidParameters());
         onBuyDecisionTaken = null;
         events.addPlayerResignEvent(currentPlayer);
         playerLost(currentPlayer);
@@ -128,14 +149,21 @@ public class MonopolyEngine implements Engine
 
     public void startGame()
     {
-        if (players.size() < numberOfPlayers || !isBoardIsInitialized)
+        if (isGameWaiting())
         {
             return;
         }
+        
+        players.forEach(p -> p.setPlayerStatus(PlayerStatus.ACTIVE));
         Collections.shuffle(players);
         putPlayersAtFirstCell();
         events.addGameStartEvent();
         playGame();
+    }
+    
+    @Override
+    public boolean isGameWaiting() {
+        return players.size() < numberOfPlayers || !isBoardIsInitialized;
     }
 
     public void playGame()
@@ -261,6 +289,7 @@ public class MonopolyEngine implements Engine
 
     private void playerLost(Player player)
     {
+        player.setPlayerStatus(PlayerStatus.RETIRED);
         lostPlayers.add(player);
         events.addPlayerLostEvent(player);
         board.playerLost(player);
@@ -342,6 +371,38 @@ public class MonopolyEngine implements Engine
     public List<Player> getAllPlayers()
     {
         return players;
+    }
+
+    @Override
+    public GameDetails getGameDetails() {
+        GameDetails gt = new GameDetails();
+        gt.setComputerizedPlayers(computerPlayers);
+        gt.setHumanPlayers(humanPlayers);
+        gt.setJoinedHumanPlayers(players.size() - computerPlayers);
+        gt.setName(getGameName());
+        gt.setStatus(getGameStatus());
+        return gt;
+    }
+
+    @Override
+    public GameStatus getGameStatus() {
+        if (isGameWaiting())
+            return GameStatus.WAITING;
+        if (events.getEvents().stream().map(e -> e.getType()).anyMatch(et -> et.equals(EventType.GAME_OVER)))
+            return GameStatus.FINISHED;
+        return GameStatus.ACTIVE;
+    }
+
+    @Override
+    public PlayerDetails getPlayerDetails(int playerID) throws InvalidParameters_Exception{
+        Player player = players.stream().filter(p -> p.getPlayerID() == playerID).
+                findFirst().orElseThrow(() -> new InvalidParameters_Exception("Player does not exits", new InvalidParameters()));
+        return player.getDetails();
+    }
+
+    @Override
+    public List<PlayerDetails> getPlayersDetails() {
+        return players.stream().map(p -> p.getDetails()).collect(Collectors.toList());
     }
 
     public interface OnBuyDecisionTaken
