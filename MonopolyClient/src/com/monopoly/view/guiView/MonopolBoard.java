@@ -1,6 +1,7 @@
 package com.monopoly.view.guiView;
 
 import com.monopoly.controller.Controller;
+import com.monopoly.view.guiView.connection.Game_init_connect_Controller;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
 import com.monopoly.view.guiView.controllers.GetNamesSceneController;
@@ -30,6 +31,8 @@ public class MonopolBoard extends Application
 
     private static final String BOARD_SCENE_FXML_PATH     = "BoardScene.fxml";
     private static final String GAME_INIT_SCENE_FXML_PATH = "game_init_scene.fxml";
+    private static final String GAME_CONN_SCENE_FXML_PATH = "connection/game_init_connect_scene.fxml";
+
     private static final String GET_NAMES_SCENE_FXML_PATH = "game_init_get_human_names.fxml";
 
     private Stage primaryStage;
@@ -62,9 +65,10 @@ public class MonopolBoard extends Application
         primaryStage.setTitle("Monopoly");
         primaryStage.setResizable(false);
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("controllers/boardImages/Surprise.png")));
-        showGameInit();
+        
+        showConnectionInit();
     }
-
+    
     public File getExternalXML()
     {
         return externalXML;
@@ -79,7 +83,22 @@ public class MonopolBoard extends Application
     {
         return computerPlayers;
     }
-
+    
+    public void showConnectionInit() 
+    {
+        FXMLLoader gameConnXMLLoader = getFXMLLoader(GAME_CONN_SCENE_FXML_PATH);
+        primaryStage.setScene(new Scene(getRoot(gameConnXMLLoader)));
+        Game_init_connect_Controller  connectionController = gameConnXMLLoader.getController();
+        connectionController.setNewGameListener(()->endConnInitAndStartNewGame(connectionController));
+        primaryStage.show();
+        
+    }
+    
+    private void endConnInitAndStartNewGame(Game_init_connect_Controller connectionController)
+    {    
+        showGameInit();
+    }
+        
     public void showGameInit()
     {
         FXMLLoader gameInitXMLLoader = getFXMLLoader(GAME_INIT_SCENE_FXML_PATH);
