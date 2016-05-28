@@ -111,19 +111,23 @@ public class MonopolyEngine implements Engine
     {
         if (onBuyDecisionTaken == null)
             return;
-        
         resignTimer.cancel();
-        onBuyDecisionTaken.buy(buy);
         onBuyDecisionTaken = null;
+        
+        onBuyDecisionTaken.buy(buy);
         playGame();
     }
 
     @Override
     public void resign(int playerID) throws InvalidParameters_Exception
     {
-        resignTimer.cancel();
+        if (onBuyDecisionTaken == null)
+            return;
+
         if (currentPlayer.getPlayerID() != playerID)
             throw  new InvalidParameters_Exception("Invalid playerID", new InvalidParameters());
+        
+        resignTimer.cancel();
         onBuyDecisionTaken = null;
         events.addPlayerResignEvent(currentPlayer);
         playerLost(currentPlayer);
