@@ -19,6 +19,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import ws.monopoly.EventType;
@@ -31,6 +35,7 @@ import ws.monopoly.PlayerStatus;
 
 public class MonopolyEngine implements Engine
 {
+    public static final long TIMER_DELAY = 1000 * 60;
     public static final int FIRST_PLAYER_INDEX      = 0;
     public static final int END_OF_ROUND_MONEY_EARN = 200;
     public static final int MINIMUM_GAME_PLAYERS    = 2;
@@ -48,6 +53,7 @@ public class MonopolyEngine implements Engine
     private String gameName = "";
     private int computerPlayers;
     private int humanPlayers;
+    private Timer resignTimer;
     
     @Override
     public String getGameName()
@@ -103,6 +109,10 @@ public class MonopolyEngine implements Engine
     @Override
     public void buy(int playerID, int eventID, boolean buy)
     {
+        if (onBuyDecisionTaken == null)
+            return;
+        
+        resignTimer.cancel();
         onBuyDecisionTaken.buy(buy);
         onBuyDecisionTaken = null;
         playGame();
@@ -111,6 +121,7 @@ public class MonopolyEngine implements Engine
     @Override
     public void resign(int playerID) throws InvalidParameters_Exception
     {
+        resignTimer.cancel();
         if (currentPlayer.getPlayerID() != playerID)
             throw  new InvalidParameters_Exception("Invalid playerID", new InvalidParameters());
         onBuyDecisionTaken = null;
@@ -332,17 +343,32 @@ public class MonopolyEngine implements Engine
 
     public void askToBuyProperty(Property property, Player player, OnBuyDecisionTaken onBuyDecisionTaken)
     {
+        scheduleResign();
         this.onBuyDecisionTaken = onBuyDecisionTaken;
         events.addPromptPlayerToBuyAssetEvent(player, property.getGroupName(), property.getName(), property.getPrice(),
                                               board.getCellIndex(property));
     }
 
+
     public void askToBuyHouse(City city, Player player, OnBuyDecisionTaken onBuyDecisionTaken)
     {
+        scheduleResign();
         this.onBuyDecisionTaken = onBuyDecisionTaken;
         events.addPromptPlayerToBuyHouseEvent(player, city.getName(), city.getHousePrice(), board.getCellIndex(city));
     }
 
+    public void scheduleResign() {
+        resignTimer = new Timer();
+        resignTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    resign(currentPlayer.getPlayerID());
+                } catch (InvalidParameters_Exception ex) {}
+            }
+        }, TIMER_DELAY);
+    }
+    
     public void addHouseBoughtEvent(Player player, City city)
     {
         events.addHouseBoughtEvent(player, city.getName(), board.getCellIndex(city));

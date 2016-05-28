@@ -1,5 +1,7 @@
 package MonopolyGameWeb.logic.events;
 
+import MonopolyGameWeb.logic.engine.Engine;
+import MonopolyGameWeb.logic.engine.MonopolyEngine;
 import MonopolyGameWeb.logic.model.DiceRoll;
 import MonopolyGameWeb.logic.model.player.Player;
 import ws.monopoly.Event;
@@ -149,7 +151,7 @@ public class EventList
         String eventMessage = player
                 .getName() + " would you like to buy " + propertyName + " in " + propertyGroupName + " for ₪" + price + "? You now own ₪" + player
                 .getMoneyAmount();
-        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROPMPT_PLAYER_TO_BY_HOUSE)
+        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROPMPT_PLAYER_TO_BY_HOUSE).setTimeoutCount((int) MonopolyEngine.TIMER_DELAY)
                 .setEventMessage(eventMessage).setPlayerName(player.getName()).setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
@@ -158,7 +160,7 @@ public class EventList
     {
         String eventMessage = player.getName() + " would you like to buy house in " + cityName + " for ₪" + housePrice +
                 "? You now own ₪" + player.getMoneyAmount();
-        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROPMPT_PLAYER_TO_BY_HOUSE)
+        Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROPMPT_PLAYER_TO_BY_HOUSE).setTimeoutCount((int) MonopolyEngine.TIMER_DELAY)
                 .setEventMessage(eventMessage).setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
