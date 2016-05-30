@@ -15,6 +15,10 @@ public class Controller {
     private View view;
     private int lastEvent = 0;
     private boolean isAnotherGame = false;
+    private boolean isWillingToJoinToGame = false;
+    private String playerToJoinName = null;
+    private String gameToJoinName = null;
+    
     MonopolyWebService gameWebService;
 
     public boolean isIsAnotherGame() {
@@ -23,6 +27,14 @@ public class Controller {
 
     public void setIsAnotherGame(boolean isAnotherGame) {
         this.isAnotherGame = isAnotherGame;
+    }
+    
+    public void setJoinGame(String gameName, String playerName) 
+    {
+        this.isWillingToJoinToGame = true;
+        this.gameToJoinName = gameName;
+        this.playerToJoinName = playerName;
+        
     }
     public static String GAME_NAME = "Monopoly";
     public static final int MAXIMUM_GAME_PLAYERS = 6;
@@ -41,7 +53,8 @@ public class Controller {
         view.setPlayerResign(() -> resign(DUMMY_PLAYER_ID));
     }
 
-    public void play() {
+    public void play() 
+    {
         initGame();
         runEventsLoop();
     }
@@ -73,18 +86,40 @@ public class Controller {
         }
     }
 
-    private void initGame() {
-        initBoard();
-        createPlayers();
+    private void initGame() 
+    {
+        try 
+        {
+            initBoard();
+            addPlayers();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
     }
 
-    private void initBoard() {
-        try {
+    private void addPlayers() 
+    {
+        if(isWillingToJoinToGame)
+        {
+            joinToPlayers();
+        }
+        else
+        {
+            createPlayers();
+        }
+    }
+
+    private void initBoard() throws Exception
+    {
+        try 
+        {
             XmlMonopolyInitReader monopolyInitReader = new XmlMonopolyInitReader(gameWebService.getBoardXML());
             monopolyInitReader.read();
             view.setDrawables(monopolyInitReader.getDrawables());
-        } catch (Exception ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        catch (Exception ex) 
+        {
+            throw new Exception("Board didn't initialize");
         }
     }
 
@@ -99,9 +134,6 @@ public class Controller {
         } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        //TODO delete engine create game!!!!!!!!!!!!
-        //engine.createGame(GAME_NAME, computerPlayersNumber, humanPlayersNumber);
         addHumanPlayersNames(view.getDistinctHumanPlayerNames(humanPlayersNumber));
     }
 
@@ -132,5 +164,23 @@ public class Controller {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
         continueGameAfterPromt();
+    }
+
+    private void joinToPlayers() 
+    {
+
+        try {
+            gameWebService.joinGame(this.gameToJoinName, this.playerToJoinName);
+        } 
+         catch (InvalidParameters_Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GameDoesNotExists_Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Game doesn't exist", ex);
+        }
+        /*
+        while(gameWebService.getWaitingGames().contains(this.gameToJoinName))
+        {
+           //Thread.sleep(1000);
+        } */
     }
 }

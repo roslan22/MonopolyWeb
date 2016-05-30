@@ -156,9 +156,11 @@ public abstract class View
     protected abstract void showGoToJailMsg(Event event);
 
     public abstract void setDrawables(List<? extends GuiCell> drawableProperties);
+    
+    public abstract  void showErrorMessage(String message);
 
     private void unknownEvent()
     {
     }
-
+    
 }

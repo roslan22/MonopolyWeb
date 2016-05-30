@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 /**
@@ -23,12 +25,16 @@ public class Game_init_connect_Controller implements Initializable {
      * Initializes the controller class.
      */
     @FXML
-    private TextField new_game_name, join_game_name, join_user_name;  
+    private TextField newGameName, gameNameToJoin, joinGameUserName;  
     
     @FXML 
     private Button createNewGameButton, joinGameButton; 
     
-        private NewGameListener newGameListener;
+    @FXML 
+    private Label errorTextLabel;
+    
+    private NewGameListener newGameListener = null;
+    private JoinGameListener joinGameListener = null;
 
     @FXML
     private void onCreateNewGameClicked()
@@ -36,6 +42,21 @@ public class Game_init_connect_Controller implements Initializable {
         newGameListener.onCreateNewGameButtonPressed();
     }
     
+    @FXML
+    private void onJoinGameClicked()
+    {
+        joinGameListener.onJoinGameButtonPressed();
+    }
+    
+    public String getGameNameToJoin() 
+    {
+        return gameNameToJoin.getText();
+    }
+
+    public String getUserNameToJoin() 
+    {
+        return joinGameUserName.getText();
+    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -47,9 +68,25 @@ public class Game_init_connect_Controller implements Initializable {
         this.newGameListener = newGameListener;
     }
     
+    public void setJoinGameListener(JoinGameListener joinGameListener)
+    {
+        this.joinGameListener = joinGameListener;
+    }
+
+    public void showErrorMessage(String message) 
+    {
+        errorTextLabel.setVisible(true);
+        errorTextLabel.setText(message);
+    }
+        
     public interface NewGameListener
     {
         void onCreateNewGameButtonPressed();
+    }
+    
+    public interface JoinGameListener
+    {
+        void onJoinGameButtonPressed();
     }
     
 }

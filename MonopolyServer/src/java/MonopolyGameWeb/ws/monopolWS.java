@@ -49,10 +49,19 @@ public class monopolWS {
 
     public void createGame(int computerizedPlayers, int humanPlayers, java.lang.String name) 
             throws ws.monopoly.DuplicateGameName_Exception, ws.monopoly.InvalidParameters_Exception {
-        if (engine != null)
-            return;
+        engine = new MonopolyEngine();
+        /*if (engine != null)
+            return; */
         validatePlayersNumber(computerizedPlayers, humanPlayers);
-        startGame(name, computerizedPlayers, humanPlayers);
+        if(!engine.getGameName().equals(name))
+        {
+            startGame(name, computerizedPlayers, humanPlayers);
+        }
+        else
+        {
+           throw new ws.monopoly.
+                    DuplicateGameName_Exception("Game with name:" + name + "already exist", null);        
+        }
     }
 
     public void startGame(String name, int computerizedPlayers, int humanPlayers) {
@@ -63,7 +72,7 @@ public class monopolWS {
     
     private void validatePlayersNumber(int computerizedPlayers, int humanPlayers) throws InvalidParameters_Exception
     {
-        if (computerizedPlayers + humanPlayers > 6 || humanPlayers < 2 || computerizedPlayers < 0)
+        if (computerizedPlayers + humanPlayers > 6 || humanPlayers < 1 || computerizedPlayers < 0)
             throw new InvalidParameters_Exception("Invalid players number", new InvalidParameters());
     }
 

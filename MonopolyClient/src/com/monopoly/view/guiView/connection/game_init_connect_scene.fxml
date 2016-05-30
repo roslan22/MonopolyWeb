@@ -24,7 +24,7 @@
                <children>
                   <Label />
                   <Label contentDisplay="CENTER" prefHeight="35.0" prefWidth="200.0" text="Create new game:" />
-                  <TextField fx:id="new_game_name" prefHeight="51.0" prefWidth="211.0" promptText="Game name" text="Monopoly">
+                  <TextField fx:id="newGameName" prefHeight="51.0" prefWidth="211.0" promptText="Game name" text="Monopoly">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
@@ -35,9 +35,10 @@
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Label prefHeight="35.0" prefWidth="217.0" text="Join existing game:" />
-                  <TextField fx:id="join_game_name" text="Monopoly" />
-                  <TextField fx:id="join_user_name" promptText="Your name" />
-                  <Button fx:id="joinGameButton" mnemonicParsing="false" text="Join" />
+                  <TextField fx:id="gameNameToJoin" text="Monopoly" />
+                  <TextField fx:id="joinGameUserName" promptText="Your name" />
+                  <Button fx:id="joinGameButton" mnemonicParsing="false" onAction="#onJoinGameClicked" text="Join" />
+                  <Label fx:id="errorTextLabel" prefHeight="77.0" prefWidth="298.0" textAlignment="CENTER" textFill="#a81313" visible="false" wrapText="true" />
                </children>
             </VBox>
          </children>

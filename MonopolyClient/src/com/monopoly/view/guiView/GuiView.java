@@ -187,4 +187,9 @@ public class GuiView extends View
     {
         monopolBoard.setDrawables(drawableProperties);
     }
+
+    @Override
+    public void showErrorMessage(String message) {
+        monopolBoard.showErrorMessage(message);
+    }
 }

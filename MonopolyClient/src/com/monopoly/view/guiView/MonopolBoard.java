@@ -47,7 +47,7 @@ public class MonopolBoard extends Application
     private Scene currentBoardScene;
     MonopolyWebServiceService service;
     MonopolyWebService gameWebService;
-
+    private Game_init_connect_Controller connectionController = null;
 
     Procedure startNewGameProcedure      = this::startAnotherGame;
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
@@ -90,6 +90,8 @@ public class MonopolBoard extends Application
         primaryStage.setScene(new Scene(getRoot(gameConnXMLLoader)));
         Game_init_connect_Controller  connectionController = gameConnXMLLoader.getController();
         connectionController.setNewGameListener(()->endConnInitAndStartNewGame(connectionController));
+        connectionController.setJoinGameListener(()->endConnInitAndJoinGame(connectionController));
+        this.connectionController = connectionController;
         primaryStage.show();
         
     }
@@ -97,6 +99,32 @@ public class MonopolBoard extends Application
     private void endConnInitAndStartNewGame(Game_init_connect_Controller connectionController)
     {    
         showGameInit();
+    }
+    
+    private void endConnInitAndJoinGame(Game_init_connect_Controller connectionController)
+    {
+        String gameNameToJoin = connectionController.getGameNameToJoin();
+        String userNameToJoin = connectionController.getUserNameToJoin();
+        joinGame(gameNameToJoin,userNameToJoin);
+    }
+    
+    private void joinGame(String gameNameToJoin, String userNameToJoin) 
+    {
+        initWebServices();
+        gameWebService.getWaitingGames().forEach((game)->System.out.println(game));
+        
+        if(gameWebService.getWaitingGames().contains(gameNameToJoin))
+        {
+        GuiView guiView = new GuiView(this);
+        Controller controller = new Controller(guiView, gameWebService);
+        controller.setJoinGame(gameNameToJoin, userNameToJoin);
+        controller.play();
+        }
+        else
+        {
+            this.connectionController.showErrorMessage("Game doesn't exists, please try again");
+        }
+        
     }
         
     public void showGameInit()
@@ -313,6 +341,14 @@ public class MonopolBoard extends Application
     private void initWebServices() {
         service = new MonopolyWebServiceService();
         gameWebService = service.getMonopolyWebServicePort();
+    }
+
+    void showErrorMessage(String message) 
+    {
+        if(connectionController!=null)
+        {
+            connectionController.showErrorMessage(message);
+        }
     }
 
 }
