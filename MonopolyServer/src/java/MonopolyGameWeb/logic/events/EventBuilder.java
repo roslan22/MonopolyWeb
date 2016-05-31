@@ -1,5 +1,6 @@
 package MonopolyGameWeb.logic.events;
 
+import MonopolyGameWeb.logic.engine.MonopolyEngine;
 import ws.monopoly.EventType;
 import ws.monopoly.Event;
 
@@ -111,27 +112,10 @@ public class EventBuilder
         event.setPaymemtFromUser(paymentFromUser);
         event.setPaymentAmount(paymentAmount);
         event.setPaymentToPlayerName(paymentToPlayerName);
-
-       
-        //event.setTimeout(eventID);
-        //event.setBoardSquareID(eventID);
-        //event.setNextBoardSquareID(eventID);
-        /*
-        return new Event(eventID,
-                         timeoutCount,
-                         eventType,
-                         playerName,
-                         eventMessage,
-                         boardSquareID,
-                         firstDiceResult,
-                         secondDiceResult,
-                         playerMove,
-                         nextBoardSquareID,
-                         paymentToOrFromTreasury,
-                         paymentFromUser,
-                         paymentToPlayerName,
-                         paymentAmount);
-        */
+        event.setTimeout((int)MonopolyEngine.TIMER_DELAY);
+        event.setBoardSquareID(boardSquareID);
+        event.setNextBoardSquareID(nextBoardSquareID);
+ 
         return event;
     }
 }

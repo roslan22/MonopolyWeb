@@ -9,6 +9,7 @@ import com.monopoly.view.guiView.guiEntities.GuiCell;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
 import com.monopoly.view.playerDescisions.PlayerResign;
+import com.monopoly.ws.GameDoesNotExists_Exception;
 import com.monopoly.ws.MonopolyWebService;
 import com.monopoly.ws.MonopolyWebServiceService;
 
@@ -17,6 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -49,9 +53,11 @@ public class MonopolBoard extends Application
     MonopolyWebService gameWebService;
     private Game_init_connect_Controller connectionController = null;
     private String newGameName = null;
-    
+    private boolean isJoinGame = false;
     Procedure startNewGameProcedure      = this::startAnotherGame;
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
+    private String gameNameToJoin;
+    private String userNameToJoin;
 
     @Override
     public void start(Stage primaryStage)
@@ -107,20 +113,29 @@ public class MonopolBoard extends Application
     {
         String gameNameToJoin = connectionController.getGameNameToJoin();
         String userNameToJoin = connectionController.getUserNameToJoin();
-        joinGame(gameNameToJoin,userNameToJoin);
+        try {
+            joinGame(gameNameToJoin,userNameToJoin);
+        } catch (GameDoesNotExists_Exception ex) {
+            Logger.getLogger(MonopolBoard.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
-    private void joinGame(String gameNameToJoin, String userNameToJoin) 
+    private void joinGame(String gameNameToJoin, String userNameToJoin) throws GameDoesNotExists_Exception 
     {
         initWebServices();
         gameWebService.getWaitingGames().forEach((game)->System.out.println(game));
         
         if(gameWebService.getWaitingGames().contains(gameNameToJoin))
         {
-            GuiView guiView = new GuiView(this);
-            Controller controller = new Controller(guiView, gameWebService);
-            controller.setJoinGame(gameNameToJoin, userNameToJoin);
-            controller.play();
+            List<String> playerNames = gameWebService.getPlayersDetails(gameNameToJoin).
+                                                      stream().map(p->p.getName())
+                                                      .collect(Collectors.toList());
+            playerNames.add(userNameToJoin);
+            isJoinGame = true;
+            this.gameNameToJoin = gameNameToJoin;
+            this.userNameToJoin = userNameToJoin;
+            computerPlayers = gameWebService.getGameDetails(gameNameToJoin).getComputerizedPlayers();
+            endGetNames(playerNames);
         }
         else
         {
@@ -232,10 +247,20 @@ public class MonopolBoard extends Application
 
     private void startController()
     {
-        initWebServices();
         GuiView guiView = new GuiView(this);
-        Controller controller = new Controller(guiView, gameWebService);
-        controller.setGameName(newGameName);
+        Controller controller;
+        
+        if(!isJoinGame)
+        {
+          initWebServices();
+          controller = new Controller(guiView, gameWebService);
+          controller.setGameName(newGameName);
+        }
+        else
+        {
+            controller = new Controller(guiView, gameWebService);
+            controller.setJoinGame(gameNameToJoin, userNameToJoin);   
+        }
         controller.play();
     }
 

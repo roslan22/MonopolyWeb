@@ -112,9 +112,10 @@ public class MonopolyEngine implements Engine
         if (onBuyDecisionTaken == null)
             return;
         resignTimer.cancel();
-        onBuyDecisionTaken = null;
         
         onBuyDecisionTaken.buy(buy);
+        onBuyDecisionTaken = null;
+
         playGame();
     }
 
