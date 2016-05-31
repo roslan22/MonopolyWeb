@@ -81,7 +81,7 @@ public class monopolWS {
     }
 
     public java.util.List<java.lang.String> getWaitingGames() {
-        return getEngine().isGameWaiting() ? new ArrayList<>() : Arrays.asList(getEngine().getGameName());
+        return getEngine().isGameWaiting() ? Arrays.asList(getEngine().getGameName()) : new ArrayList<>();
     }
 
     public int joinGame(java.lang.String gameName, java.lang.String playerName) 
