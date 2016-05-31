@@ -18,6 +18,7 @@ public class Controller {
     private boolean isWillingToJoinToGame = false;
     private String playerToJoinName = null;
     private String gameToJoinName = null;
+    private String newGameName = null;
     
     MonopolyWebService gameWebService;
 
@@ -36,7 +37,7 @@ public class Controller {
         this.playerToJoinName = playerName;
         
     }
-    public static String GAME_NAME = "Monopoly";
+    public static String DEFAULT_GAME_NAME = "Monopoly";
     public static final int MAXIMUM_GAME_PLAYERS = 6;
     public static int DUMMY_PLAYER_ID = 1;
     public static String DEFAULT_XML_PATH = "configs/monopoly_config.xml";
@@ -105,7 +106,7 @@ public class Controller {
         }
         else
         {
-            createPlayers();
+            createPlayersForNewGame();
         }
     }
 
@@ -123,12 +124,12 @@ public class Controller {
         }
     }
 
-    private void createPlayers() {
+    private void createPlayersForNewGame() {
         int humanPlayersNumber = view.getHumanPlayersNumber(MAXIMUM_GAME_PLAYERS);
         int computerPlayersNumber = view.getComputerPlayersNumber(MAXIMUM_GAME_PLAYERS - humanPlayersNumber);
 
         try {
-            gameWebService.createGame(computerPlayersNumber, humanPlayersNumber, GAME_NAME);
+            gameWebService.createGame(computerPlayersNumber, humanPlayersNumber, newGameName);
         } catch (DuplicateGameName_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvalidParameters_Exception ex) {
@@ -140,16 +141,13 @@ public class Controller {
     private void addHumanPlayersNames(List<String> humanPlayersNames) {
         for (String name : humanPlayersNames) {
             try {
-                gameWebService.joinGame(GAME_NAME, name);
+                gameWebService.joinGame(newGameName, name);
             } catch (GameDoesNotExists_Exception ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvalidParameters_Exception ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        /*humanPlayersNames.forEach((p) -> {
-            
-        }); */
     }
 
     private void buy(int playerID, int eventID, boolean answer) {
@@ -182,5 +180,10 @@ public class Controller {
         {
            //Thread.sleep(1000);
         } */
+    }
+
+    public void setGameName(String newGameName) 
+    {
+        this.newGameName = newGameName;
     }
 }

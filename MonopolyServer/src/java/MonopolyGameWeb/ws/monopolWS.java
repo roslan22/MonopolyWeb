@@ -50,8 +50,7 @@ public class monopolWS {
     public void createGame(int computerizedPlayers, int humanPlayers, java.lang.String name) 
             throws ws.monopoly.DuplicateGameName_Exception, ws.monopoly.InvalidParameters_Exception {
         engine = new MonopolyEngine();
-        /*if (engine != null)
-            return; */
+   
         validatePlayersNumber(computerizedPlayers, humanPlayers);
         if(!engine.getGameName().equals(name))
         {
@@ -65,7 +64,6 @@ public class monopolWS {
     }
 
     public void startGame(String name, int computerizedPlayers, int humanPlayers) {
-        getEngine();
         tryToLoadBoardFromXML();
         getEngine().createGame(name, computerizedPlayers, humanPlayers);
     }

@@ -3,8 +3,6 @@ package com.monopoly.view.guiView.controllers;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.IntStream;
 
 import javafx.fxml.FXML;
@@ -12,7 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.FileChooser;
 
 public class GameInitSceneController implements Initializable
 {
@@ -24,11 +21,11 @@ public class GameInitSceneController implements Initializable
     private static final String LABEL_INVALID_CLASS = "label-invalid";
 
     @FXML
-    private Label humanPlayersLabel, computerPlayersLabel, selectedXMLLabel, messageLabel;
+    private Label humanPlayersLabel, computerPlayersLabel, selectedXMLLabel;
 
     @FXML
     private Button addHumanPlayerButton, addComputerPlayerButton, removeComputerPlayerButton,
-            removeHumanPlayerButton, nextButton, clearXMLChoiceButton;
+            removeHumanPlayerButton, nextButton;
 
     private File         externalXMLFILE;
     private XMLValidator xmlValidator;
@@ -102,67 +99,11 @@ public class GameInitSceneController implements Initializable
         removePlayerFromLabel(computerPlayersLabel);
     }
 
-    @FXML
-    private void onExternalXMLButtonPressed(MouseEvent e)
-    {
-        chooseExternalXMLFile();
-    }
-
-    @FXML
-    private void onClearXMLButtonPressed(MouseEvent e)
-    {
-        externalXMLFILE = null;
-        selectedXMLLabel.setText("");
-        replaceXMLLabelClass(LABEL_CLASS, LABEL_INVALID_CLASS);
-        nextButton.setDisable(false);
-    }
 
     @FXML
     private void onNextButtonPressed(MouseEvent e)
     {
         nextListener.onNextButtonPressed();
-    }
-
-    private void chooseExternalXMLFile()
-    {
-        askForFile();
-        if (externalXMLFILE != null)
-        {
-            selectedXMLLabel.setText(externalXMLFILE.getName());
-            validateExternalXMLFile(externalXMLFILE);
-        }
-    }
-
-    private void askForFile()
-    {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("External XML");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
-        externalXMLFILE = fileChooser.showOpenDialog(addComputerPlayerButton.getContextMenu());
-    }
-
-    private void validateExternalXMLFile(File selectedXML)
-    {
-        if (xmlValidator != null && !xmlValidator.isXMLValid(selectedXML))
-            signInvalidXMLFile();
-        else
-            signValidXMLFile();
-    }
-
-    private void signInvalidXMLFile()
-    {
-        nextButton.setDisable(true);
-        replaceXMLLabelClass(LABEL_CLASS, LABEL_INVALID_CLASS);
-        showErrorMessage();
-    }
-
-    private void showErrorMessage()
-    {
-        messageLabel.setVisible(true);
-        messageLabel.setText("Invalid XML");
-        Timer t = new Timer();
-        final TimerTask task = new TimerTask() { public void run() { messageLabel.setVisible(false); t.cancel(); }};
-        t.schedule(task, 2500);
     }
 
     private void replaceXMLLabelClass(String prevClass, String nextClass)

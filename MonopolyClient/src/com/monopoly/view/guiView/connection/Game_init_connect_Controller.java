@@ -78,6 +78,11 @@ public class Game_init_connect_Controller implements Initializable {
         errorTextLabel.setVisible(true);
         errorTextLabel.setText(message);
     }
+    
+    public String getNewGameName()
+    {
+        return newGameName.getText();
+    }
         
     public interface NewGameListener
     {

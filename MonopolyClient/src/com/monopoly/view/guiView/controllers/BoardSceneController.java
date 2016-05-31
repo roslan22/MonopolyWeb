@@ -194,7 +194,11 @@ public class BoardSceneController implements Initializable
         humanPlayerNames.forEach((name) -> placePlayerOnBoard(name, START_PLACE));
     }
 
-
+    private void addJoindedPlayer(String playerName)
+    {
+        placePlayerOnBoard(playerName, START_PLACE);
+    }
+    
     private void addComputerPlayers(int playersNumber)
     {
         IntStream.range(1, playersNumber + 1).forEach(i -> placePlayerOnBoard("Computer" + i, START_PLACE));

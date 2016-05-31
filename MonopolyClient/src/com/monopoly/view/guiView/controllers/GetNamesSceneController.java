@@ -51,10 +51,10 @@ public class GetNamesSceneController implements Initializable
 
     private void setCurrentPlayerLabelText()
     {
-        playerNumberLabel.setText("Player " + String.valueOf(currentPlayerIndex) + " name:");
+        playerNumberLabel.setText("Enter your name:");
 
-        if (names.size() == humanPlayersNumber - 1 || humanPlayersNumber == 1)
-            nextButton.setText("Start");
+        //if (names.size() == humanPlayersNumber - 1 || humanPlayersNumber == 1)
+        nextButton.setText("Start");
     }
 
     @FXML
@@ -82,10 +82,8 @@ public class GetNamesSceneController implements Initializable
     {
         if (playerNameTextField.getText().isEmpty())
             showErrorMessage("Please type a name");
-        else if (names.contains(playerNameTextField.getText()))
-            showErrorMessage("Name already exists");
-        else
-            addName();
+        
+        addName();
     }
 
     private void nameExists()
@@ -117,7 +115,7 @@ public class GetNamesSceneController implements Initializable
         currentPlayerIndex++;
         playerNameTextField.clear();
         setCurrentPlayerLabelText();
-        if (names.size() == humanPlayersNumber && getNamesEndedListener != null)
+        if (getNamesEndedListener != null)
             getNamesEndedListener.onGetNameEnded();
     }
 

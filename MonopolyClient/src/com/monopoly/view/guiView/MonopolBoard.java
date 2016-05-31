@@ -48,7 +48,8 @@ public class MonopolBoard extends Application
     MonopolyWebServiceService service;
     MonopolyWebService gameWebService;
     private Game_init_connect_Controller connectionController = null;
-
+    private String newGameName = null;
+    
     Procedure startNewGameProcedure      = this::startAnotherGame;
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
 
@@ -97,7 +98,8 @@ public class MonopolBoard extends Application
     }
     
     private void endConnInitAndStartNewGame(Game_init_connect_Controller connectionController)
-    {    
+    {   
+        newGameName = connectionController.getNewGameName();
         showGameInit();
     }
     
@@ -115,10 +117,10 @@ public class MonopolBoard extends Application
         
         if(gameWebService.getWaitingGames().contains(gameNameToJoin))
         {
-        GuiView guiView = new GuiView(this);
-        Controller controller = new Controller(guiView, gameWebService);
-        controller.setJoinGame(gameNameToJoin, userNameToJoin);
-        controller.play();
+            GuiView guiView = new GuiView(this);
+            Controller controller = new Controller(guiView, gameWebService);
+            controller.setJoinGame(gameNameToJoin, userNameToJoin);
+            controller.play();
         }
         else
         {
@@ -140,7 +142,6 @@ public class MonopolBoard extends Application
     private void endGameInit(GameInitSceneController gameInitController)
     {
         externalXML = gameInitController.getXMLFile();
-        //XmlMonopolyInitReader.getInstance(externalXML != null ? externalXML.getPath() : null).readInBackground();
         humanPlayers = gameInitController.getHumanPlayers();
         computerPlayers = gameInitController.getComputerPlayers();
         askForHumanPlayersNames(gameInitController.getHumanPlayers());
@@ -176,7 +177,7 @@ public class MonopolBoard extends Application
         Parent root = getRoot(getNamesFXMLLoader);
         boardSceneController = getNamesFXMLLoader.getController();
         playerNames = names;
-
+        
         boardSceneController.setPlayers(names, computerPlayers);
         currentBoardScene = new Scene(root);
         primaryStage.setScene(currentBoardScene);
@@ -234,6 +235,7 @@ public class MonopolBoard extends Application
         initWebServices();
         GuiView guiView = new GuiView(this);
         Controller controller = new Controller(guiView, gameWebService);
+        controller.setGameName(newGameName);
         controller.play();
     }
 
