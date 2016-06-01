@@ -80,9 +80,9 @@ public class GetNamesSceneController implements Initializable
 
     private void nameSigned()
     {
-        if (playerNameTextField.getText().isEmpty())
+       if(playerNameTextField.getText().isEmpty())
             showErrorMessage("Please type a name");
-        
+
         addName();
     }
 
@@ -111,12 +111,15 @@ public class GetNamesSceneController implements Initializable
 
     private void addName()
     {
+        if(!playerNameTextField.getText().isEmpty())
+        {
         names.add(playerNameTextField.getText());
         currentPlayerIndex++;
         playerNameTextField.clear();
         setCurrentPlayerLabelText();
         if (getNamesEndedListener != null)
             getNamesEndedListener.onGetNameEnded();
+        }
     }
 
     public List<String> getNames()
