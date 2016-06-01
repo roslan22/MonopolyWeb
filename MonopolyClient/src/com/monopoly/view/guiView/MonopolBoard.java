@@ -139,9 +139,26 @@ public class MonopolBoard extends Application
         }
         else
         {
-            this.connectionController.showErrorMessage("Game doesn't exists, please try again");
+            showRelatedErrorMessage();
         }
         
+    }
+
+    private void showRelatedErrorMessage() 
+    {
+        StringBuilder games = new StringBuilder();
+        gameWebService.getWaitingGames().forEach((game)->games.append(" ").append(game));
+            
+        if(!games.toString().isEmpty())
+        {
+            this.connectionController.showErrorMessage("Game doesn't exists, please try again. "
+                    + "Available games:" + games);
+        }
+        else        
+        {
+            this.connectionController.showErrorMessage("No available games now, please create "
+                    + "new game first.");
+        }
     }
         
     public void showGameInit()
