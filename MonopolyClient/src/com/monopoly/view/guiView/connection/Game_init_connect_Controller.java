@@ -23,7 +23,7 @@ public class Game_init_connect_Controller implements Initializable {
 
     /**
      * Initializes the controller class.
-     */
+     */ 
     @FXML
     private TextField newGameName, gameNameToJoin, joinGameUserName;  
     

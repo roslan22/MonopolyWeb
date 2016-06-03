@@ -1,6 +1,7 @@
 package com.monopoly.view.guiView;
 
 import com.monopoly.controller.Controller;
+import com.monopoly.view.guiView.connection.ClientServerConnectionController;
 import com.monopoly.view.guiView.connection.Game_init_connect_Controller;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
@@ -36,7 +37,7 @@ public class MonopolBoard extends Application
     private static final String BOARD_SCENE_FXML_PATH     = "BoardScene.fxml";
     private static final String GAME_INIT_SCENE_FXML_PATH = "game_init_scene.fxml";
     private static final String GAME_CONN_SCENE_FXML_PATH = "connection/game_init_connect_scene.fxml";
-
+    private static final String CONNECTION_SERVER_SCENE_FXML_PATH = "connection/server_connection_on_start.fxml";
     private static final String GET_NAMES_SCENE_FXML_PATH = "game_init_get_human_names.fxml";
 
     private Stage primaryStage;
@@ -58,7 +59,9 @@ public class MonopolBoard extends Application
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
     private String gameNameToJoin;
     private String userNameToJoin;
-
+    private String serverIP;
+    private String serverPort;
+    
     @Override
     public void start(Stage primaryStage)
     {
@@ -68,27 +71,29 @@ public class MonopolBoard extends Application
     private void startGame(Stage primaryStage)
     {
         this.primaryStage = primaryStage;
-
         primaryStage.setTitle("Monopoly");
         primaryStage.setResizable(false);
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("controllers/boardImages/Surprise.png")));
         
-        showConnectionInit();
+        showServerConnectionScene();
     }
     
-    public File getExternalXML()
+    private void showServerConnectionScene() 
     {
-        return externalXML;
-    }
+        FXMLLoader gameConnServerXMLLoader = getFXMLLoader(CONNECTION_SERVER_SCENE_FXML_PATH);
+        primaryStage.setScene(new Scene(getRoot(gameConnServerXMLLoader)));
+        ClientServerConnectionController clientServerConnectionController = gameConnServerXMLLoader.getController();
+        clientServerConnectionController.setNextListener(()->endShowServerConnectionScene(clientServerConnectionController));
 
-    public int getHumanPlayers()
-    {
-        return humanPlayers;
+        primaryStage.show();
     }
-
-    public int getComputerPlayers()
+    
+    private void endShowServerConnectionScene(ClientServerConnectionController clientServerConnectionController) 
     {
-        return computerPlayers;
+        serverIP = clientServerConnectionController.getServerIp();
+        serverPort = clientServerConnectionController.getServerPort();
+        
+        showConnectionInit();
     }
     
     public void showConnectionInit() 
@@ -280,7 +285,22 @@ public class MonopolBoard extends Application
         }
         controller.play();
     }
+    
+    public File getExternalXML()
+    {
+        return externalXML;
+    }
 
+    public int getHumanPlayers()
+    {
+        return humanPlayers;
+    }
+
+    public int getComputerPlayers()
+    {
+        return computerPlayers;
+    }
+    
     public List<String> getHumanPlayersNames()
     {
         return humanPlayersNames;
