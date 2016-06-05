@@ -19,7 +19,7 @@ public class Controller {
     private String playerToJoinName = null;
     private String gameToJoinName = null;
     private String newGameName = null;
-    
+
     MonopolyWebService gameWebService;
 
     public boolean isIsAnotherGame() {
@@ -29,13 +29,12 @@ public class Controller {
     public void setIsAnotherGame(boolean isAnotherGame) {
         this.isAnotherGame = isAnotherGame;
     }
-    
-    public void setJoinGame(String gameName, String playerName) 
-    {
+
+    public void setJoinGame(String gameName, String playerName) {
         this.isWillingToJoinToGame = true;
         this.gameToJoinName = gameName;
         this.playerToJoinName = playerName;
-        
+
     }
     public static String DEFAULT_GAME_NAME = "Monopoly";
     public static final int MAXIMUM_GAME_PLAYERS = 6;
@@ -54,8 +53,7 @@ public class Controller {
         view.setPlayerResign(() -> resign(DUMMY_PLAYER_ID));
     }
 
-    public void play() 
-    {
+    public void play() throws InvalidParameters_Exception, Exception {
         initGame();
         runEventsLoop();
     }
@@ -87,54 +85,35 @@ public class Controller {
         }
     }
 
-    private void initGame() 
-    {
-        try 
-        {
-            initBoard();
-            addPlayers();
-        } catch (Exception ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        }
+    private void initGame() throws DuplicateGameName_Exception, InvalidParameters_Exception, Exception {
+        initBoard();
+        addPlayers();
     }
 
-    private void addPlayers() 
-    {
-        if(isWillingToJoinToGame)
-        {
+    private void addPlayers() throws DuplicateGameName_Exception, InvalidParameters_Exception {
+        if (isWillingToJoinToGame) {
             joinToPlayers();
-        }
-        else
-        {
+        } else {
             createPlayersForNewGame();
         }
     }
 
-    private void initBoard() throws Exception
-    {
-        try 
-        {
+    private void initBoard() throws Exception {
+        try {
             XmlMonopolyInitReader monopolyInitReader = new XmlMonopolyInitReader(gameWebService.getBoardXML());
             monopolyInitReader.read();
             view.setDrawables(monopolyInitReader.getDrawables());
-        } 
-        catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             throw new Exception("Board didn't initialize");
         }
     }
 
-    private void createPlayersForNewGame() {
+    private void createPlayersForNewGame() throws DuplicateGameName_Exception, InvalidParameters_Exception {
         int humanPlayersNumber = view.getHumanPlayersNumber(MAXIMUM_GAME_PLAYERS);
         int computerPlayersNumber = view.getComputerPlayersNumber(MAXIMUM_GAME_PLAYERS - humanPlayersNumber);
 
-        try {
-            gameWebService.createGame(computerPlayersNumber, humanPlayersNumber, newGameName);
-        } catch (DuplicateGameName_Exception ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidParameters_Exception ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        gameWebService.createGame(computerPlayersNumber, humanPlayersNumber, newGameName);
+
         addHumanPlayersNames(view.getDistinctHumanPlayerNames(humanPlayersNumber));
     }
 
@@ -164,13 +143,11 @@ public class Controller {
         continueGameAfterPromt();
     }
 
-    private void joinToPlayers() 
-    {
+    private void joinToPlayers() {
 
         try {
             gameWebService.joinGame(this.gameToJoinName, this.playerToJoinName);
-        } 
-         catch (InvalidParameters_Exception ex) {
+        } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GameDoesNotExists_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Game doesn't exist", ex);
@@ -182,8 +159,7 @@ public class Controller {
         } */
     }
 
-    public void setGameName(String newGameName) 
-    {
+    public void setGameName(String newGameName) {
         this.newGameName = newGameName;
     }
 }

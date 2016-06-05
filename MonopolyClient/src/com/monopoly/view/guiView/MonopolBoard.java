@@ -63,6 +63,8 @@ public class MonopolBoard extends Application
     private String userNameToJoin;
     private String serverIP;
     private String serverPort;
+    public String errorMessage;
+
     
     @Override
     public void start(Stage primaryStage)
@@ -106,8 +108,14 @@ public class MonopolBoard extends Application
         connectionController.setNewGameListener(()->endConnInitAndStartNewGame(connectionController));
         connectionController.setJoinGameListener(()->endConnInitAndJoinGame(connectionController));
         this.connectionController = connectionController;
+        showLastGameErrorMessage();
         primaryStage.show();
         
+    }
+
+    public void showLastGameErrorMessage() {
+        connectionController.showErrorMessage(errorMessage);
+        errorMessage = "";
     }
     
     private void endConnInitAndStartNewGame(Game_init_connect_Controller connectionController)
@@ -130,7 +138,6 @@ public class MonopolBoard extends Application
     private void joinGame(String gameNameToJoin, String userNameToJoin) throws GameDoesNotExists_Exception 
     {
         initWebServices();
-        gameWebService.getWaitingGames().forEach((game)->System.out.println(game));
         
         if(gameWebService.getWaitingGames().contains(gameNameToJoin))
         {
@@ -148,18 +155,16 @@ public class MonopolBoard extends Application
         {
             showRelatedErrorMessage();
         }
-        
     }
 
     private void showRelatedErrorMessage() 
     {
-        StringBuilder games = new StringBuilder();
-        gameWebService.getWaitingGames().forEach((game)->games.append(" ").append(game));
+        List<String> waitingGames = gameWebService.getWaitingGames();
             
-        if(!games.toString().isEmpty())
+        if(!waitingGames.isEmpty())
         {
             this.connectionController.showErrorMessage("Game doesn't exists, please try again. "
-                    + "Available games:" + games);
+                    + "Available games:" + String.join(", ", waitingGames));
         }
         else        
         {
@@ -285,7 +290,12 @@ public class MonopolBoard extends Application
             controller = new Controller(guiView, gameWebService);
             controller.setJoinGame(gameNameToJoin, userNameToJoin);   
         }
-        controller.play();
+        try {
+            controller.play();
+        } catch (Exception ex) {
+            errorMessage = ex.getMessage();
+            startAnotherGame();
+        }
     }
     
     public File getExternalXML()
