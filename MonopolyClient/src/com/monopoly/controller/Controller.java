@@ -2,6 +2,7 @@ package com.monopoly.controller;
 
 import com.monopoly.view.View;
 import com.monopoly.ws.DuplicateGameName_Exception;
+import com.monopoly.ws.Event;
 import com.monopoly.ws.GameDoesNotExists_Exception;
 import com.monopoly.ws.InvalidParameters_Exception;
 import com.monopoly.ws.MonopolyWebService;
@@ -68,16 +69,29 @@ public class Controller {
         List<com.monopoly.ws.Event> events = null;
         try {
             events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
+            if(events.isEmpty())
+            {
+                System.out.println("received empty events lists, waiting 3 sec....");
+                System.out.println("In thread number" + Thread.currentThread().getName().toString());
+                waitForEvents();
+            }
+            else
+            {
+               startEventsLoopTillEndOfGame(events); 
+            }
         } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
+    private void startEventsLoopTillEndOfGame(List<Event> events) {
+        System.out.println("In thread number" + Thread.currentThread().getName().toString());
         while (events != null && !events.isEmpty()) {
             lastEvent = events.get(events.size() - 1).getId();
             //NEXT TWO LINES FOR EX. 3
             //events = engine.getEvents(player.getPlayerID(), lastReceivedEventIds.get(player));
             //lastReceivedEventIds.replace(player, events[events.length-1].getEventID());
-
+            
             view.showEvents(events);
             try {
                 events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
@@ -175,15 +189,24 @@ public class Controller {
         } catch (GameDoesNotExists_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Game doesn't exist", ex);
         }
-        /*
-        while(gameWebService.getWaitingGames().contains(this.gameToJoinName))
-        {
-           //Thread.sleep(1000);
-        } */
     }
 
     public void setGameName(String newGameName) 
     {
         this.newGameName = newGameName;
+    }
+
+    private void waitForEvents() {
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+            @Override
+            public void run() 
+            {
+                System.out.println("Trying to check if game started....");
+                runEventsLoop();
+            }
+        },
+         3000
+        );
     }
 }
