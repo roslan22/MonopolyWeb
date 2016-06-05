@@ -17,6 +17,8 @@ import com.monopoly.ws.MonopolyWebServiceService;
 import java.awt.geom.IllegalPathStateException;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -403,8 +405,17 @@ public class MonopolBoard extends Application
     }
     
     private void initWebServices() {
-        service = new MonopolyWebServiceService();
-        gameWebService = service.getMonopolyWebServicePort();
+        URL location;
+        try 
+        {
+            location = new URL("http://" + serverIP + ":" + serverPort + "/monopoly/MonopolyWebServiceService?wsdl");
+            service = new MonopolyWebServiceService(location);
+            gameWebService = service.getMonopolyWebServicePort();
+        } 
+        catch (MalformedURLException ex) 
+        {
+            Logger.getLogger(MonopolBoard.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     void showErrorMessage(String message) 

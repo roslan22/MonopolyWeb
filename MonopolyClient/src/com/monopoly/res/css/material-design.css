@@ -236,8 +236,19 @@
 
 .icon-button .text {
 	-fx-font-family: 'MaterialDesignIconicFont';
-	-fx-font-size: 24px;
+	-fx-font-size: 20px;
 }
+
+#changeServerButton .text{
+    -fx-font-family: 'MaterialDesignIconicFont';
+    -fx-font-size: 17px;
+}
+
+#nextSceneButton .text{
+    -fx-font-family: 'MaterialDesignIconicFont';
+    -fx-font-size: 17px;
+}
+
 
 /*******************************************************************************
  *                                                                             *

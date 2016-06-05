@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,118 +36,106 @@ import org.xml.sax.SAXException;
  *
  * @author Ruslan
  */
-public class ClientServerConnectionController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
-    
-    @FXML 
+public class ClientServerConnectionController implements Initializable 
+{
+    @FXML
     private Label statusLabel, alertLabel;
-    
-    @FXML 
+
+    @FXML
     private Button changeServerButton, nextSceneButton;
-    
-    @FXML 
+
+    @FXML
     private TextField serverIP, serverPort;
-    
+
     private String serverIpTxt, serverPortTxt;
     private boolean isInViewOnlyMode = true;
     private NextListener nextListener;
 
+    private static final String DEFAULT_SERVER = "localhost";
+    private static final String DEFAULT_PORT = "8080";
+
     @FXML
-    private void onNextSceneButtonClicked()
-    {
-        if(isInViewOnlyMode)
-        {
+    private void onNextSceneButtonClicked() {
+        if (isInViewOnlyMode) {
             nextListener.onNextButtonPressed();
-        }
-        else
-        {
+        } else {
             setServerParameters();
             changeButtonsToViewMode();
         }
     }
-    
+
     @FXML
-    private void onChangeServerButtonClicked()
-    {
-        if(isInViewOnlyMode)
-        {
+    private void onChangeServerButtonClicked() {
+        if (isInViewOnlyMode) {
             isInViewOnlyMode = false;
             changeButtonsToEditMode();
-        }
-        else //in edit mode 
-        {
-            if(saveConfigurationSettingsToFile())
-            {
+        } else //in edit mode 
+         if (saveConfigurationSettingsToFile()) {
                 changeButtonsToViewMode();
                 isInViewOnlyMode = true;
             }
-        }
-
     }
-    
-    public void setNextListener(NextListener nextListener)
-    {
+
+    public void setNextListener(NextListener nextListener) {
         this.nextListener = nextListener;
     }
-    
+
     private void changeButtonsToEditMode() {
         serverIP.setEditable(true);
         serverPort.setEditable(true);
         changeServerButton.setText("Save");
         nextSceneButton.setText("Cancel");
     }
-    
-    private void changeButtonsToViewMode() 
-    {
+
+    private void changeButtonsToViewMode() {
         serverIP.setEditable(false);
         serverPort.setEditable(false);
         changeServerButton.setText("Change IP/Port");
         nextSceneButton.setText("Next");
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       if(isServerConfigFileExists())
-       {
-           DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-           factory.setIgnoringElementContentWhitespace(true);
-           DocumentBuilder builder;
-           try {
-               builder = factory.newDocumentBuilder();
-               Document doc = builder.parse("serverConfiguration.xml"); 
-               serverIpTxt = doc.getElementsByTagName("serverIp").item(0).getTextContent();
-               serverPortTxt = doc.getElementsByTagName("port").item(0).getTextContent();
-               setServerParameters();
-           } 
-           catch (ParserConfigurationException ex) {
-               Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
-           } catch (SAXException ex) {
-               Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
-           } catch (IOException ex) {
-               Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
-           }
-       }
-       else
-       {
-           createConfigurationXML();
 
-       }
-    }    
+        changeServerButton.setId("changeServerButton");
+        nextSceneButton.setId("nextSceneButton");
 
-    private boolean isServerConfigFileExists() 
-    {
+        if (isServerConfigFileExists()) {
+            fetchDataFromExistingXML();
+        } else {
+            createDefaultConfigurationXML();
+            fetchDataFromExistingXML();
+        }
+    }
+
+    private void fetchDataFromExistingXML() throws DOMException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setIgnoringElementContentWhitespace(true);
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("serverConfiguration.xml");
+            serverIpTxt = doc.getElementsByTagName("serverIp").item(0).getTextContent();
+            serverPortTxt = doc.getElementsByTagName("port").item(0).getTextContent();
+            setServerParameters();
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private boolean isServerConfigFileExists() {
         File file = new File("serverConfiguration.xml");
-        
+
         boolean exists = file.exists();
         System.out.println("Temp file exists : " + exists);
         return exists;
-    }      
+    }
 
-    private void createConfigurationXML() 
-    {
+    private void createDefaultConfigurationXML() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setIgnoringElementContentWhitespace(true);
         DocumentBuilder builder;
@@ -156,13 +145,13 @@ public class ClientServerConnectionController implements Initializable {
             Document doc = builder.newDocument();
             Element rootElement = doc.createElement("ServerConfiguraion");
             doc.appendChild(rootElement);
-            
+
             Element serverIp = doc.createElement("serverIp");
-            serverIp.appendChild(doc.createTextNode("locallhost"));
-            
+            serverIp.appendChild(doc.createTextNode(DEFAULT_SERVER));
+
             Element serverPort = doc.createElement("port");
-            serverPort.appendChild(doc.createTextNode("8080"));
-            
+            serverPort.appendChild(doc.createTextNode(DEFAULT_PORT));
+
             rootElement.appendChild(serverIp);
             rootElement.appendChild(serverPort);
 
@@ -173,32 +162,27 @@ public class ClientServerConnectionController implements Initializable {
     }
 
     private void writeToXmlFile(Document doc) {
-          // write the content into xml file
-         TransformerFactory transformerFactory =
-         TransformerFactory.newInstance();
-         Transformer transformer;
+        TransformerFactory transformerFactory
+                = TransformerFactory.newInstance();
+        Transformer transformer;
         try {
             transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result =
-            new StreamResult(new File("serverConfiguration.xml"));
+            StreamResult result
+                    = new StreamResult(new File("serverConfiguration.xml"));
             transformer.transform(source, result);
-             // Output to console for testing
-            StreamResult consoleResult =
-            new StreamResult(System.out);
-            transformer.transform(source, consoleResult); 
-        } 
-        catch (TransformerConfigurationException ex) 
-        {
+            // Output to console for testing
+            StreamResult consoleResult
+                    = new StreamResult(System.out);
+            transformer.transform(source, consoleResult);
+        } catch (TransformerConfigurationException ex) {
             Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        catch (TransformerException ex) {
+        } catch (TransformerException ex) {
             Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
-        } 
         }
+    }
 
-    private void setServerParameters() 
-    {
+    private void setServerParameters() {
         serverIP.setText(serverIpTxt);
         serverPort.setText(serverPortTxt);
         serverIP.setEditable(false);
@@ -206,58 +190,68 @@ public class ClientServerConnectionController implements Initializable {
         isInViewOnlyMode = true;
     }
 
-    private boolean saveConfigurationSettingsToFile() 
-    {
+    private boolean saveConfigurationSettingsToFile() {
         boolean isSuccesseded = true;
-        if(!serverIP.getText().isEmpty() && !serverPort.getText().isEmpty())
-        {
-            if(isInteger(serverPort.getText()))
-            {
-              serverIpTxt = serverIP.getText();
-              serverPortTxt = serverPort.getText();
-              //TODO: save to XML file
-              alertLabel.setText("Saved to XML file");
-            }
-            else
-            {
+        if (!serverIP.getText().isEmpty() && !serverPort.getText().isEmpty()) {
+            if (isInteger(serverPort.getText())) {
+                serverIpTxt = serverIP.getText();
+                serverPortTxt = serverPort.getText();
+                updateCurrentXML();
+                alertLabel.setText("Saved to XML file");
+            } else {
                 alertLabel.setText("Wrong port, please try again");
                 isSuccesseded = false;
             }
+        } else {
+            alertLabel.setText("Empty IP or Port, please try again");
+            isSuccesseded = false;
         }
-        else
-        {
-           alertLabel.setText("Empty IP or Port, please try again");
-           isSuccesseded = false;
-        }
-        
+
         return isSuccesseded;
     }
-    
+
     public static boolean isInteger(String s) {
-    try { 
-        Integer.parseInt(s); 
-    } catch(NumberFormatException e) { 
-        return false; 
-    } catch(NullPointerException e) {
-        return false;
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return false;
+        }
+        return true;
     }
 
-    return true;
-    }
-    
-    public String getServerIp()
-    {
+    public String getServerIp() {
         return serverIpTxt;
     }
-    
-    public String getServerPort()
-    {
+
+    public String getServerPort() {
         return serverPortTxt;
     }
-        
-    public interface NextListener
-    {
+
+    private void updateCurrentXML() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setIgnoringElementContentWhitespace(true);
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("serverConfiguration.xml");
+            doc.getElementsByTagName("serverIp").item(0).setTextContent(serverIpTxt);
+            doc.getElementsByTagName("port").item(0).setTextContent(serverPortTxt);
+            setServerParameters();
+            writeToXmlFile(doc);
+            System.out.println("Server parameters has changed in XML file");
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientServerConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public interface NextListener {
         void onNextButtonPressed();
     }
-    
+
 }
