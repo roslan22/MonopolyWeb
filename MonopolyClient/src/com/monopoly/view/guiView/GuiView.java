@@ -116,23 +116,19 @@ public class GuiView extends View
     {
         if (isPaymentToBank(event))
             monopolBoard.updateMoney(event.getPlayerName(), "", event.getPaymentAmount());
-        if (isPaymentFromBank(event))
+        else if (isPaymentFromBank(event))
             monopolBoard.updateMoney("", event.getPlayerName(), event.getPaymentAmount());
-        //if (!event.isPaymentToOrFromTreasury())
-            //monopolBoard.updateMoney(event.getPlayerName(), event.getPaymentToPlayerName(), event.getPaymentAmount());
+        else
+            monopolBoard.updateMoney(event.getPlayerName(), event.getPaymentToPlayerName(), event.getPaymentAmount());
         monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
-    private boolean isPaymentFromBank(Event event)
-    {
-        //return event.isPaymentToOrFromTreasury() && !event.isPaymentFromUser();
-        return true;
+    public static boolean isPaymentFromBank(Event event) {
+        return !event.isPaymemtFromUser();
     }
 
-    private boolean isPaymentToBank(Event event)
-    {
-        //return event.isPaymentToOrFromTreasury() && event.isPaymentFromUser();
-        return true;
+    public static boolean isPaymentToBank(Event event) {
+        return event.isPaymemtFromUser() && event.getPaymentToPlayerName().equals("");
     }
 
     @Override
