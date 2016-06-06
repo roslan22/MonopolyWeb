@@ -194,7 +194,7 @@ public class EventList
         Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PAYMENT).setPlayerName(player.getName())
                 .setEventMessage("Bank payed ₪" + amount + " to " + player.getName() + ". Now owns ₪" + player
                         .getMoneyAmount()).setPaymentToOrFromTreasury(true).setPaymentAmount(amount)
-                .setPaymentFromUser(false).createGameEvent();
+                .setPaymentToPlayerName(player.getName()).setPaymentFromUser(false).createGameEvent();
         events.add(e);
     }
 

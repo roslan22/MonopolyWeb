@@ -115,7 +115,6 @@ public class EventBuilder
         event.setTimeout((int)MonopolyEngine.TIMER_DELAY);
         event.setBoardSquareID(boardSquareID);
         event.setNextBoardSquareID(nextBoardSquareID);
- 
         return event;
     }
 }
