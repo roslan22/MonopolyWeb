@@ -51,35 +51,43 @@ public interface MonopolyWebService {
 
     /**
      * 
+     * @param gameName
      * @return
-     *     returns java.lang.String
+     *     returns java.util.List<ws.monopoly.PlayerDetails>
+     * @throws GameDoesNotExists_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getBoardSchema", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardSchema")
-    @ResponseWrapper(localName = "getBoardSchemaResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardSchemaResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/getBoardSchemaRequest", output = "http://monopoly.ws/MonopolyWebService/getBoardSchemaResponse")
-    public String getBoardSchema();
+    @RequestWrapper(localName = "getPlayersDetails", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayersDetails")
+    @ResponseWrapper(localName = "getPlayersDetailsResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayersDetailsResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/getPlayersDetailsRequest", output = "http://monopoly.ws/MonopolyWebService/getPlayersDetailsResponse", fault = {
+        @FaultAction(className = GameDoesNotExists_Exception.class, value = "http://monopoly.ws/MonopolyWebService/getPlayersDetails/Fault/GameDoesNotExists")
+    })
+    public List<PlayerDetails> getPlayersDetails(
+        @WebParam(name = "gameName", targetNamespace = "")
+        String gameName)
+        throws GameDoesNotExists_Exception
+    ;
 
     /**
      * 
      * @return
-     *     returns java.lang.String
+     *     returns java.util.List<java.lang.String>
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getBoardXML", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardXML")
-    @ResponseWrapper(localName = "getBoardXMLResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardXMLResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/getBoardXMLRequest", output = "http://monopoly.ws/MonopolyWebService/getBoardXMLResponse")
-    public String getBoardXML();
+    @RequestWrapper(localName = "getWaitingGames", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetWaitingGames")
+    @ResponseWrapper(localName = "getWaitingGamesResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetWaitingGamesResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/getWaitingGamesRequest", output = "http://monopoly.ws/MonopolyWebService/getWaitingGamesResponse")
+    public List<String> getWaitingGames();
 
     /**
      * 
      * @param humanPlayers
      * @param name
      * @param computerizedPlayers
-     * @throws DuplicateGameName_Exception
      * @throws InvalidParameters_Exception
+     * @throws DuplicateGameName_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createGame", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.CreateGame")
@@ -97,6 +105,94 @@ public interface MonopolyWebService {
         String name)
         throws DuplicateGameName_Exception, InvalidParameters_Exception
     ;
+
+    /**
+     * 
+     * @param playerId
+     * @throws InvalidParameters_Exception
+     */
+    @WebMethod
+    @RequestWrapper(localName = "resign", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.Resign")
+    @ResponseWrapper(localName = "resignResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.ResignResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/resignRequest", output = "http://monopoly.ws/MonopolyWebService/resignResponse", fault = {
+        @FaultAction(className = InvalidParameters_Exception.class, value = "http://monopoly.ws/MonopolyWebService/resign/Fault/InvalidParameters")
+    })
+    public void resign(
+        @WebParam(name = "playerId", targetNamespace = "")
+        int playerId)
+        throws InvalidParameters_Exception
+    ;
+
+    /**
+     * 
+     * @param gameName
+     * @param playerName
+     * @return
+     *     returns int
+     * @throws InvalidParameters_Exception
+     * @throws GameDoesNotExists_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "joinGame", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.JoinGame")
+    @ResponseWrapper(localName = "joinGameResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.JoinGameResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/joinGameRequest", output = "http://monopoly.ws/MonopolyWebService/joinGameResponse", fault = {
+        @FaultAction(className = GameDoesNotExists_Exception.class, value = "http://monopoly.ws/MonopolyWebService/joinGame/Fault/GameDoesNotExists"),
+        @FaultAction(className = InvalidParameters_Exception.class, value = "http://monopoly.ws/MonopolyWebService/joinGame/Fault/InvalidParameters")
+    })
+    public int joinGame(
+        @WebParam(name = "gameName", targetNamespace = "")
+        String gameName,
+        @WebParam(name = "playerName", targetNamespace = "")
+        String playerName)
+        throws GameDoesNotExists_Exception, InvalidParameters_Exception
+    ;
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getBoardXML", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardXML")
+    @ResponseWrapper(localName = "getBoardXMLResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardXMLResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/getBoardXMLRequest", output = "http://monopoly.ws/MonopolyWebService/getBoardXMLResponse")
+    public String getBoardXML();
+
+    /**
+     * 
+     * @param playerId
+     * @return
+     *     returns ws.monopoly.PlayerDetails
+     * @throws InvalidParameters_Exception
+     * @throws GameDoesNotExists_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getPlayerDetails", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayerDetails")
+    @ResponseWrapper(localName = "getPlayerDetailsResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayerDetailsResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/getPlayerDetailsRequest", output = "http://monopoly.ws/MonopolyWebService/getPlayerDetailsResponse", fault = {
+        @FaultAction(className = GameDoesNotExists_Exception.class, value = "http://monopoly.ws/MonopolyWebService/getPlayerDetails/Fault/GameDoesNotExists"),
+        @FaultAction(className = InvalidParameters_Exception.class, value = "http://monopoly.ws/MonopolyWebService/getPlayerDetails/Fault/InvalidParameters")
+    })
+    public PlayerDetails getPlayerDetails(
+        @WebParam(name = "playerId", targetNamespace = "")
+        int playerId)
+        throws GameDoesNotExists_Exception, InvalidParameters_Exception
+    ;
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getBoardSchema", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardSchema")
+    @ResponseWrapper(localName = "getBoardSchemaResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetBoardSchemaResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/getBoardSchemaRequest", output = "http://monopoly.ws/MonopolyWebService/getBoardSchemaResponse")
+    public String getBoardSchema();
 
     /**
      * 
@@ -120,116 +216,25 @@ public interface MonopolyWebService {
 
     /**
      * 
-     * @return
-     *     returns java.util.List<java.lang.String>
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getWaitingGames", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetWaitingGames")
-    @ResponseWrapper(localName = "getWaitingGamesResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetWaitingGamesResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/getWaitingGamesRequest", output = "http://monopoly.ws/MonopolyWebService/getWaitingGamesResponse")
-    public List<String> getWaitingGames();
-
-    /**
-     * 
-     * @param gameName
-     * @param playerName
-     * @return
-     *     returns int
-     * @throws GameDoesNotExists_Exception
-     * @throws InvalidParameters_Exception
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "joinGame", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.JoinGame")
-    @ResponseWrapper(localName = "joinGameResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.JoinGameResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/joinGameRequest", output = "http://monopoly.ws/MonopolyWebService/joinGameResponse", fault = {
-        @FaultAction(className = GameDoesNotExists_Exception.class, value = "http://monopoly.ws/MonopolyWebService/joinGame/Fault/GameDoesNotExists"),
-        @FaultAction(className = InvalidParameters_Exception.class, value = "http://monopoly.ws/MonopolyWebService/joinGame/Fault/InvalidParameters")
-    })
-    public int joinGame(
-        @WebParam(name = "gameName", targetNamespace = "")
-        String gameName,
-        @WebParam(name = "playerName", targetNamespace = "")
-        String playerName)
-        throws GameDoesNotExists_Exception, InvalidParameters_Exception
-    ;
-
-    /**
-     * 
-     * @param playerId
-     * @return
-     *     returns ws.monopoly.PlayerDetails
-     * @throws GameDoesNotExists_Exception
-     * @throws InvalidParameters_Exception
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getPlayerDetails", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayerDetails")
-    @ResponseWrapper(localName = "getPlayerDetailsResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayerDetailsResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/getPlayerDetailsRequest", output = "http://monopoly.ws/MonopolyWebService/getPlayerDetailsResponse", fault = {
-        @FaultAction(className = GameDoesNotExists_Exception.class, value = "http://monopoly.ws/MonopolyWebService/getPlayerDetails/Fault/GameDoesNotExists"),
-        @FaultAction(className = InvalidParameters_Exception.class, value = "http://monopoly.ws/MonopolyWebService/getPlayerDetails/Fault/InvalidParameters")
-    })
-    public PlayerDetails getPlayerDetails(
-        @WebParam(name = "playerId", targetNamespace = "")
-        int playerId)
-        throws GameDoesNotExists_Exception, InvalidParameters_Exception
-    ;
-
-    /**
-     * 
      * @param arg2
      * @param arg1
      * @param arg0
+     * @throws InvalidParameters_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "buy", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.Buy")
     @ResponseWrapper(localName = "buyResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.BuyResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/buyRequest", output = "http://monopoly.ws/MonopolyWebService/buyResponse")
+    @Action(input = "http://monopoly.ws/MonopolyWebService/buyRequest", output = "http://monopoly.ws/MonopolyWebService/buyResponse", fault = {
+        @FaultAction(className = InvalidParameters_Exception.class, value = "http://monopoly.ws/MonopolyWebService/buy/Fault/InvalidParameters")
+    })
     public void buy(
         @WebParam(name = "arg0", targetNamespace = "")
         int arg0,
         @WebParam(name = "arg1", targetNamespace = "")
         int arg1,
         @WebParam(name = "arg2", targetNamespace = "")
-        boolean arg2);
-
-    /**
-     * 
-     * @param playerId
-     * @throws InvalidParameters_Exception
-     */
-    @WebMethod
-    @RequestWrapper(localName = "resign", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.Resign")
-    @ResponseWrapper(localName = "resignResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.ResignResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/resignRequest", output = "http://monopoly.ws/MonopolyWebService/resignResponse", fault = {
-        @FaultAction(className = InvalidParameters_Exception.class, value = "http://monopoly.ws/MonopolyWebService/resign/Fault/InvalidParameters")
-    })
-    public void resign(
-        @WebParam(name = "playerId", targetNamespace = "")
-        int playerId)
+        boolean arg2)
         throws InvalidParameters_Exception
-    ;
-
-    /**
-     * 
-     * @param gameName
-     * @return
-     *     returns java.util.List<ws.monopoly.PlayerDetails>
-     * @throws GameDoesNotExists_Exception
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getPlayersDetails", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayersDetails")
-    @ResponseWrapper(localName = "getPlayersDetailsResponse", targetNamespace = "http://monopoly.ws/", className = "ws.monopoly.GetPlayersDetailsResponse")
-    @Action(input = "http://monopoly.ws/MonopolyWebService/getPlayersDetailsRequest", output = "http://monopoly.ws/MonopolyWebService/getPlayersDetailsResponse", fault = {
-        @FaultAction(className = GameDoesNotExists_Exception.class, value = "http://monopoly.ws/MonopolyWebService/getPlayersDetails/Fault/GameDoesNotExists")
-    })
-    public List<PlayerDetails> getPlayersDetails(
-        @WebParam(name = "gameName", targetNamespace = "")
-        String gameName)
-        throws GameDoesNotExists_Exception
     ;
 
 }
