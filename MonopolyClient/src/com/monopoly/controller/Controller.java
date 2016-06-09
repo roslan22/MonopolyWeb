@@ -20,7 +20,7 @@ public class Controller {
     private String playerToJoinName = null;
     private String gameToJoinName = null;
     private String newGameName = null;
-
+    
     MonopolyWebService gameWebService;
 
     public boolean isIsAnotherGame() {
@@ -144,7 +144,12 @@ public class Controller {
     }
 
     private void buy(int playerID, int eventID, boolean answer) {
-        gameWebService.buy(playerID, eventID, answer);
+        try {
+            gameWebService.buy(playerID, eventID, answer);
+        } catch (InvalidParameters_Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         continueGameAfterPromt();
     }
 

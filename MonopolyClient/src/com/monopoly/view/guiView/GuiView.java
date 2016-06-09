@@ -6,11 +6,13 @@ import com.monopoly.ws.Event;
 
 import java.io.File;
 import java.util.List;
+import com.monopoly.sharedData.ClientSharedData;
 
 public class GuiView extends View
 {
     private MonopolBoard monopolBoard = new MonopolBoard();
-
+    private ClientSharedData clientSharedData = ClientSharedData.getInstance();
+    
     public GuiView(MonopolBoard monopolBoard)
     {
         this.monopolBoard = monopolBoard;
@@ -57,8 +59,17 @@ public class GuiView extends View
     @Override
     protected void promptPlayerToBuy(Event event)
     {
+      if(event.getPlayerName().equals(clientSharedData.getClientPlayerName()))
+      {
       monopolBoard.promptPlayerToBuy(event.getEventMessage(), playerBuyAssetDecision,
                                      event.getId());
+      }
+      else
+      {
+          System.out.println("Received buy command from: " + event.getPlayerName() + 
+                  " not showing because current Player is: " + clientSharedData.getClientPlayerName());
+          showWaitingForPlayerMessage("Waiting for " + event.getPlayerName() +"'s" + " buy decision...");
+      }
     }
 
     @Override
@@ -187,5 +198,9 @@ public class GuiView extends View
     @Override
     public void showErrorMessage(String message) {
         monopolBoard.showErrorMessage(message);
+    }
+
+    private void showWaitingForPlayerMessage(String string) {
+        monopolBoard.showWaitingForPlayerMessage(string);
     }
 }

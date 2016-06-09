@@ -695,4 +695,10 @@ public class BoardSceneController implements Initializable
     {
         buttonResign.setVisible(true);
     }
+
+    public void showWaitingForPlayerMessage(String string) 
+    {
+            gameMsg.setText(string);
+            gameMsg.setScrollTop(Double.MAX_VALUE);
+    }
 }

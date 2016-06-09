@@ -15,7 +15,7 @@ public abstract class View
     protected PlayerBuyHouseDecision playerBuyHouseDecision;
     protected PlayerBuyAssetDecision playerBuyAssetDecision;
     protected PlayerResign           playerResign;
-    
+            
     public void setPlayerResign(PlayerResign playerResign)
     {
         this.playerResign = playerResign;

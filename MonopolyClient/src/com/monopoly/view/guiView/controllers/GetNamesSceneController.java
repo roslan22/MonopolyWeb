@@ -30,6 +30,7 @@ public class GetNamesSceneController implements Initializable
     private int currentPlayerIndex = 1;
     private List<String> names = new ArrayList<>();
     private GetNamesEndedListener getNamesEndedListener;
+    private String humanPlayerName;
 
     public void setGetNamesEndedListener(GetNamesEndedListener getNamesEndedListener)
     {
@@ -114,6 +115,7 @@ public class GetNamesSceneController implements Initializable
         if(!playerNameTextField.getText().isEmpty())
         {
         names.add(playerNameTextField.getText());
+        humanPlayerName = playerNameTextField.getText();
         currentPlayerIndex++;
         playerNameTextField.clear();
         setCurrentPlayerLabelText();
@@ -130,5 +132,10 @@ public class GetNamesSceneController implements Initializable
     public interface GetNamesEndedListener
     {
         void onGetNameEnded();
+    }
+    
+    public String getHumanPlayerName()
+    {
+        return humanPlayerName;
     }
 }

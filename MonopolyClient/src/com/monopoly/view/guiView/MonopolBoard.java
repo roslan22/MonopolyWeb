@@ -1,6 +1,7 @@
 package com.monopoly.view.guiView;
 
 import com.monopoly.controller.Controller;
+import com.monopoly.sharedData.ClientSharedData;
 import com.monopoly.view.guiView.connection.ClientServerConnectionController;
 import com.monopoly.view.guiView.connection.Game_init_connect_Controller;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
@@ -64,8 +65,9 @@ public class MonopolBoard extends Application
     private String serverIP;
     private String serverPort;
     public String errorMessage;
+    private ClientSharedData clientSharedDataInstance = ClientSharedData.getInstance();
+    private static final int FIRST_NAME_INDEX = 0;
 
-    
     @Override
     public void start(Stage primaryStage)
     {
@@ -145,6 +147,7 @@ public class MonopolBoard extends Application
                                                       stream().map(p->p.getName())
                                                       .collect(Collectors.toList());
             playerNames.add(userNameToJoin);
+            clientSharedDataInstance.setClientPlayerName(userNameToJoin);
             isJoinGame = true;
             this.gameNameToJoin = gameNameToJoin;
             this.userNameToJoin = userNameToJoin;
@@ -220,13 +223,16 @@ public class MonopolBoard extends Application
         FXMLLoader getNamesFXMLLoader = getFXMLLoader(BOARD_SCENE_FXML_PATH);
         Parent root = getRoot(getNamesFXMLLoader);
         boardSceneController = getNamesFXMLLoader.getController();
+        if(!isJoinGame)
+        {
+            clientSharedDataInstance.setClientPlayerName(names.get(FIRST_NAME_INDEX));
+        }
         playerNames = names;
-        
         boardSceneController.setPlayers(names, computerPlayers);
         currentBoardScene = new Scene(root);
         primaryStage.setScene(currentBoardScene);
         primaryStage.centerOnScreen();
-
+        
         startGame();
     }
 
@@ -434,6 +440,11 @@ public class MonopolBoard extends Application
         {
             connectionController.showErrorMessage(message);
         }
+    }
+
+    void showWaitingForPlayerMessage(String string) 
+    {
+        boardSceneController.showWaitingForPlayerMessage(string);
     }
 
 }
