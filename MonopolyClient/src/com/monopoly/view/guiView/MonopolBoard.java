@@ -71,17 +71,21 @@ public class MonopolBoard extends Application
     @Override
     public void start(Stage primaryStage)
     {
+        Platform.setImplicitExit(false);
         startGame(primaryStage);
     }
 
     private void startGame(Stage primaryStage)
     {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("Monopoly");
-        primaryStage.setResizable(false);
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("controllers/boardImages/Surprise.png")));
-        
+        designWindow(primaryStage);
         showServerConnectionScene();
+    }
+
+    public void designWindow(Stage primaryStage1) {
+        primaryStage1.setTitle("Monopoly");
+        primaryStage1.setResizable(false);
+        primaryStage1.getIcons().add(new Image(getClass().getResourceAsStream("controllers/boardImages/Surprise.png")));
     }
     
     private void showServerConnectionScene() 
@@ -98,6 +102,7 @@ public class MonopolBoard extends Application
     {
         serverIP = clientServerConnectionController.getServerIp();
         serverPort = clientServerConnectionController.getServerPort();
+        initWebServices();
         
         showConnectionInit();
     }
@@ -139,7 +144,6 @@ public class MonopolBoard extends Application
     
     private void joinGame(String gameNameToJoin, String userNameToJoin) throws GameDoesNotExists_Exception 
     {
-        initWebServices();
         
         if(gameWebService.getWaitingGames().contains(gameNameToJoin))
         {
@@ -261,11 +265,7 @@ public class MonopolBoard extends Application
 
     private void startGame()
     {
-        while (isNewGameRequired)
-        {
-            playMonopoly();
-            isNewGameRequired = GuiView.isNewGameRequired();
-        }
+        playMonopoly();
     }
 
     private void playMonopoly()
@@ -275,33 +275,33 @@ public class MonopolBoard extends Application
             startController();
         } catch (Exception e)
         {
-            System.out.println(e.getMessage());
-            playMonopoly();
         }
     }
 
     private void startController()
     {
         GuiView guiView = new GuiView(this);
-        Controller controller;
+        Controller controller = createController(guiView);
         
-        if(!isJoinGame)
-        {
-          initWebServices();
-          controller = new Controller(guiView, gameWebService);
-          controller.setGameName(newGameName);
-        }
-        else
-        {
-            controller = new Controller(guiView, gameWebService);
-            controller.setJoinGame(gameNameToJoin, userNameToJoin);   
-        }
         try {
             controller.play();
         } catch (Exception ex) {
             errorMessage = ex.getMessage();
             startAnotherGame();
         }
+    }
+
+    public Controller createController(GuiView guiView) {
+        Controller controller = new Controller(guiView, gameWebService);
+        if(!isJoinGame)
+        {
+            controller.setGameName(newGameName);
+        }
+        else
+        {
+            controller.setJoinGame(gameNameToJoin, userNameToJoin);
+        }
+        return controller;
     }
     
     public File getExternalXML()
@@ -424,7 +424,7 @@ public class MonopolBoard extends Application
         URL location;
         try 
         {
-            location = new URL("http://" + serverIP + ":" + serverPort + "/monopoly/MonopolyWebServiceService?wsdl");
+            location = getUrl();
             service = new MonopolyWebServiceService(location);
             gameWebService = service.getMonopolyWebServicePort();
         } 
@@ -432,6 +432,13 @@ public class MonopolBoard extends Application
         {
             Logger.getLogger(MonopolBoard.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public URL getUrl() throws MalformedURLException {
+        if (serverIP.contains("localhost"))
+            return new URL("http://" + serverIP + ":" + serverPort + "/monopoly/MonopolyWebServiceService?wsdl");
+        else
+            return new URL("http://" + serverIP + ":" + serverPort + "/MonopolyWebServiceService?wsdl");
     }
 
     void showErrorMessage(String message) 

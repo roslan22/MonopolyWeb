@@ -84,6 +84,7 @@ public class MonopolyEngine implements Engine
     @Override
     public void createGame(String gameName, int computerPlayers, int humanPlayers)
     {
+        ComputerPlayer.computerNameCount = 0;
         this.gameName = gameName;
         this.computerPlayers = computerPlayers;
         this.humanPlayers = humanPlayers;

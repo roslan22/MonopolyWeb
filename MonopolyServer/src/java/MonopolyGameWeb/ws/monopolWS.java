@@ -18,8 +18,6 @@ import ws.monopoly.GameStatus;
 import ws.monopoly.InvalidParameters;
 import ws.monopoly.InvalidParameters_Exception;
 
-import static com.sun.xml.ws.tx.common.TxFault.InvalidParameters;
-
 /**
  *
  * @author Ruslan

@@ -312,21 +312,22 @@ public class BoardSceneController implements Initializable
     public void movePlayer(int cell, String PlayerName)
     {
         PlayerPosition playerPos = playersPlaceOnBoard.get(PlayerName);
-        Node playerIcon = playerPos.getPlayerIcon();
-        int currentCell = playerPos.getCell();
-
-        if (playerIcon != null)
+        if (playerPos.getPlayerIcon() != null)
         {
-            int cellToMove = calculateCellToMove(cell, currentCell);
-            addPlayerIconToBoardMoves(cellToMove, playerIcon);
+            addPlayerIconToBoardMoves(calculateCellToMove(cell, playerPos.getCell()), playerPos.getPlayerIcon());
         }
     }
 
     private void addPlayerIconToBoardMoves(int cell, Node playerIcon)
     {
-        PlayerPosition playerPosition = new PlayerPosition(cell, playerIcon);
-        addPlayerToSeqTransitions(playerPosition);
-
+        PlayerPosition playerMovePosition = new PlayerPosition(cell, playerIcon);
+        FadeTransition ft = createIconsFadeTransition(playerMovePosition.getPlayerIcon());
+        seqTransition.getChildren().add(ft);
+        ft.setOnFinished((ActionEvent actionEvent) -> {
+            playerMovePosition.getPlayerIcon().setOpacity(1.0);
+            removePlayerIconFromBoard(playerMovePosition.getPlayerIcon());
+            cellControllers.get(playerMovePosition.getCell()).addPlayer(playerMovePosition.getPlayerIcon());
+        });
     }
 
     private FadeTransition createIconsFadeTransition(Node playerIcon)
@@ -391,17 +392,6 @@ public class BoardSceneController implements Initializable
             {
                 showTryAnotherGamePane();
             }
-        });
-    }
-
-    private void addPlayerToSeqTransitions(PlayerPosition playerMovePosition)
-    {
-        FadeTransition ft = createIconsFadeTransition(playerMovePosition.getPlayerIcon());
-        seqTransition.getChildren().add(ft);
-        ft.setOnFinished((ActionEvent actionEvent) -> {
-            playerMovePosition.getPlayerIcon().setOpacity(1.0);
-            removePlayerIconFromBoard(playerMovePosition.getPlayerIcon());
-            cellControllers.get(playerMovePosition.getCell()).addPlayer(playerMovePosition.getPlayerIcon());
         });
     }
 
@@ -493,8 +483,10 @@ public class BoardSceneController implements Initializable
     public void playerLost(String eventMessage, String playerName)
     {
         addSeqTransitionToTextArea(eventMessage, gameMsg);
-        removePlayerAssets(playerName);
-        removePlayerIcon(playerName);
+        addSeqTransition(() -> {
+            removePlayerAssets(playerName);
+            removePlayerIcon(playerName);
+        });
     }
 
     private void removePlayerAssets(String playerName)
@@ -663,20 +655,18 @@ public class BoardSceneController implements Initializable
 
     public void showPlayerResignMsg(String eventMessage, String playerName)
     {
+        addSeqTransition(() -> {
         showMessage(eventMessage);
         removePlayerAssets(playerName);
         removePlayerIcon(playerName);
+        });
     }
 
     private void showTryAnotherGamePane()
     {
         textAreaPromt.setText("Do you want to start another game?");
-        //this.waitingForAnswerEventId = eventID;
         hideResignButton();
         showPromptPane();
-
-        //isGameOver = true;
-        //startFadeAnimations();    
     }
 
     private void removePlayerIcon(String playerName)

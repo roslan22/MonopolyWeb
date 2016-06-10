@@ -3,11 +3,14 @@ package com.monopoly.controller;
 import com.monopoly.view.View;
 import com.monopoly.ws.DuplicateGameName_Exception;
 import com.monopoly.ws.Event;
+import com.monopoly.ws.EventType;
 import com.monopoly.ws.GameDoesNotExists_Exception;
 import com.monopoly.ws.InvalidParameters_Exception;
 import com.monopoly.ws.MonopolyWebService;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +23,7 @@ public class Controller {
     private String playerToJoinName = null;
     private String gameToJoinName = null;
     private String newGameName = null;
+    private Timer timer = new Timer();
     
     MonopolyWebService gameWebService;
 
@@ -56,47 +60,48 @@ public class Controller {
 
     public void play() throws InvalidParameters_Exception, Exception {
         initGame();
-        runEventsLoop();
+        readEvents();
     }
 
     public void continueGameAfterPromt() {
-        runEventsLoop();
+        readEvents();
     }
 
-    private void runEventsLoop() {
-        List<com.monopoly.ws.Event> events = null;
-        try {
-            events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
-            if(events.isEmpty())
-            {
-                System.out.println("received empty events lists, waiting 3 sec....");
-                System.out.println("In thread number" + Thread.currentThread().getName().toString());
-                waitForEvents();
+    private void readEvents() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getEventsTimerAction();
             }
-            else
-            {
-               startEventsLoopTillEndOfGame(events); 
+        }, 0, 3000);
+    }
+    
+    public void getEventsTimerAction() {
+        try {
+            System.out.println("Quating Server For Events");
+            List<Event> e = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
+            if (!e.isEmpty()) {
+                timer.cancel();
+                executeEvents(e);
             }
         } catch (InvalidParameters_Exception ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void executeEvents(List<Event> e) 
+    {
+        lastEvent = e.get(e.size() - 1).getId();
+        view.showEvents(e);
+        if(!containsGameOverEvent(e)) 
+        {
+            readEvents();
         }
     }
 
-    private void startEventsLoopTillEndOfGame(List<Event> events) {
-        System.out.println("In thread number" + Thread.currentThread().getName().toString());
-        while (events != null && !events.isEmpty()) {
-            lastEvent = events.get(events.size() - 1).getId();
-            //NEXT TWO LINES FOR EX. 3
-            //events = engine.getEvents(player.getPlayerID(), lastReceivedEventIds.get(player));
-            //lastReceivedEventIds.replace(player, events[events.length-1].getEventID());
-            
-            view.showEvents(events);
-            try {
-                events = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
-            } catch (InvalidParameters_Exception ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+    public static boolean containsGameOverEvent(List<Event> events) {
+        return events.stream().map(Event::getType).anyMatch(e -> e.equals(EventType.GAME_OVER));
     }
 
     private void initGame() throws DuplicateGameName_Exception, InvalidParameters_Exception, Exception {
@@ -149,8 +154,6 @@ public class Controller {
         } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        continueGameAfterPromt();
     }
 
     private void resign(int playerID) {
@@ -159,7 +162,6 @@ public class Controller {
         } catch (InvalidParameters_Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-        continueGameAfterPromt();
     }
 
     private void joinToPlayers() {
@@ -175,19 +177,5 @@ public class Controller {
 
     public void setGameName(String newGameName) {
         this.newGameName = newGameName;
-    }
-
-    private void waitForEvents() {
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-            @Override
-            public void run() 
-            {
-                System.out.println("Trying to check if game started....");
-                runEventsLoop();
-            }
-        },
-         3000
-        );
     }
 }

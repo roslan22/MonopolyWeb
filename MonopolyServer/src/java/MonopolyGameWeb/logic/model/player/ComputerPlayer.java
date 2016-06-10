@@ -19,7 +19,7 @@ public class ComputerPlayer extends Player
     public static final int NONE_CELLS = 0;
     public static final int MIN_HIGH_FREQ_RESULT = 5;
     public static final int MAX_HIGH_FREQ_RESULT = 9;
-    private static int computerNameCount = 0;
+    public static int computerNameCount = 0;
 
     private Board board;
 
