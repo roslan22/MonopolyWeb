@@ -133,19 +133,17 @@ public class Controller {
 
         gameWebService.createGame(computerPlayersNumber, humanPlayersNumber, newGameName);
 
-        addHumanPlayersNames(view.getDistinctHumanPlayerNames(humanPlayersNumber));
+        joinSelfToGame(view.getCurrentPlayerName());
     }
 
-    private void addHumanPlayersNames(List<String> humanPlayersNames) {
-        for (String name : humanPlayersNames) {
+    private void joinSelfToGame(String name) {
             try {
-                gameWebService.joinGame(newGameName, name);
+                System.out.println(gameWebService.joinGame(newGameName, name));
             } catch (GameDoesNotExists_Exception ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvalidParameters_Exception ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
     }
 
     private void buy(int playerID, int eventID, boolean answer) {

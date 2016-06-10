@@ -37,7 +37,7 @@ public abstract class View
 
     public abstract int getComputerPlayersNumber(int maximumAllowed);
 
-    public abstract List<String> getDistinctHumanPlayerNames(int humanPlayersNumber);
+    public abstract String getCurrentPlayerName();
 
     public void init()
     {

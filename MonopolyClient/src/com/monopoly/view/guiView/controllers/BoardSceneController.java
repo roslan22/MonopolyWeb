@@ -103,6 +103,7 @@ public class BoardSceneController implements Initializable
     private boolean              isGameOver           = false;
     private boolean              isAnimationsFinished = true;
     private int                  nextPlayerPlaceIndex = 1;
+    private String currentPlayerName;
 
     @FXML
     private void onYesClicked()
@@ -154,10 +155,13 @@ public class BoardSceneController implements Initializable
 
     public void setPlayers(List<String> playerNames, int computerPlayers)
     {
-        addHumanPlayers(playerNames);
-        addComputerPlayers(computerPlayers);
-        createRightTopPlayersMenu();
+        currentPlayerName = playerNames.get(0);
         hidePromptPane();
+    }
+
+    public void setHumanPlayers(List<String> playerNames) {
+        addHumanPlayers(playerNames);
+        createRightTopPlayersMenu();
     }
 
     private void createRightTopPlayersMenu()
@@ -199,7 +203,7 @@ public class BoardSceneController implements Initializable
         placePlayerOnBoard(playerName, START_PLACE);
     }
     
-    private void addComputerPlayers(int playersNumber)
+    public void addComputerPlayers(int playersNumber)
     {
         IntStream.range(1, playersNumber + 1).forEach(i -> placePlayerOnBoard("Computer" + i, START_PLACE));
     }
@@ -690,5 +694,9 @@ public class BoardSceneController implements Initializable
     {
             gameMsg.setText(string);
             gameMsg.setScrollTop(Double.MAX_VALUE);
+    }
+
+    public String getCurrentPlayerName() {
+        return currentPlayerName;
     }
 }

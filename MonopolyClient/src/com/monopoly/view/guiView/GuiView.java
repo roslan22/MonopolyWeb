@@ -44,9 +44,9 @@ public class GuiView extends View
     }
 
     @Override
-    public List<String> getDistinctHumanPlayerNames(int humanPlayersNumber)
+    public String getCurrentPlayerName()
     {
-        return monopolBoard.getHumanPlayersNames();
+        return monopolBoard.getCurrentPlayerName();
     }
 
     @Override
@@ -75,6 +75,7 @@ public class GuiView extends View
     @Override
     protected void showGameStartedMsg()
     {
+        monopolBoard.loadPlayers();
         monopolBoard.initPlayerDecisions(this.playerBuyAssetDecision,
                                          this.playerBuyHouseDecision,
                                          this.playerResign);

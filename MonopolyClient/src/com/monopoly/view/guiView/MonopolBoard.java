@@ -14,6 +14,7 @@ import com.monopoly.view.playerDescisions.PlayerResign;
 import com.monopoly.ws.GameDoesNotExists_Exception;
 import com.monopoly.ws.MonopolyWebService;
 import com.monopoly.ws.MonopolyWebServiceService;
+import com.monopoly.ws.PlayerDetails;
 
 import java.awt.geom.IllegalPathStateException;
 import java.io.File;
@@ -21,7 +22,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -34,10 +37,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class MonopolBoard extends Application
-{
+public class MonopolBoard extends Application {
 
-    private static final String BOARD_SCENE_FXML_PATH     = "BoardScene.fxml";
+    private static final String BOARD_SCENE_FXML_PATH = "BoardScene.fxml";
     private static final String GAME_INIT_SCENE_FXML_PATH = "game_init_scene.fxml";
     private static final String GAME_CONN_SCENE_FXML_PATH = "connection/game_init_connect_scene.fxml";
     private static final String CONNECTION_SERVER_SCENE_FXML_PATH = "connection/server_connection_on_start.fxml";
@@ -46,19 +48,19 @@ public class MonopolBoard extends Application
     private Stage primaryStage;
 
     private File externalXML;
-    private int  humanPlayers;
-    private int  computerPlayers;
-    private List<String>         humanPlayersNames    = new ArrayList<>();
+    private int humanPlayers;
+    private int computerPlayers;
+    private List<String> humanPlayersNames = new ArrayList<>();
     private BoardSceneController boardSceneController = null;
-    private List<String> playerNames;
+    private Set<String> playerNames = new HashSet<>();
     private Boolean isNewGameRequired = true;
     private Scene currentBoardScene;
     MonopolyWebServiceService service;
     MonopolyWebService gameWebService;
     private Game_init_connect_Controller connectionController = null;
-    private String newGameName = null;
+    private String newGameName;
     private boolean isJoinGame = false;
-    Procedure startNewGameProcedure      = this::startAnotherGame;
+    Procedure startNewGameProcedure = this::startAnotherGame;
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
     private String gameNameToJoin;
     private String userNameToJoin;
@@ -67,16 +69,15 @@ public class MonopolBoard extends Application
     public String errorMessage;
     private ClientSharedData clientSharedDataInstance = ClientSharedData.getInstance();
     private static final int FIRST_NAME_INDEX = 0;
+    private String currentPlayer;
 
     @Override
-    public void start(Stage primaryStage)
-    {
+    public void start(Stage primaryStage) {
         Platform.setImplicitExit(false);
         startGame(primaryStage);
     }
 
-    private void startGame(Stage primaryStage)
-    {
+    private void startGame(Stage primaryStage) {
         this.primaryStage = primaryStage;
         designWindow(primaryStage);
         showServerConnectionScene();
@@ -87,69 +88,62 @@ public class MonopolBoard extends Application
         primaryStage1.setResizable(false);
         primaryStage1.getIcons().add(new Image(getClass().getResourceAsStream("controllers/boardImages/Surprise.png")));
     }
-    
-    private void showServerConnectionScene() 
-    {
+
+    private void showServerConnectionScene() {
         FXMLLoader gameConnServerXMLLoader = getFXMLLoader(CONNECTION_SERVER_SCENE_FXML_PATH);
         primaryStage.setScene(new Scene(getRoot(gameConnServerXMLLoader)));
         ClientServerConnectionController clientServerConnectionController = gameConnServerXMLLoader.getController();
-        clientServerConnectionController.setNextListener(()->endShowServerConnectionScene(clientServerConnectionController));
+        clientServerConnectionController.setNextListener(() -> endShowServerConnectionScene(clientServerConnectionController));
 
         primaryStage.show();
     }
-    
-    private void endShowServerConnectionScene(ClientServerConnectionController clientServerConnectionController) 
-    {
+
+    private void endShowServerConnectionScene(ClientServerConnectionController clientServerConnectionController) {
         serverIP = clientServerConnectionController.getServerIp();
         serverPort = clientServerConnectionController.getServerPort();
         initWebServices();
-        
+
         showConnectionInit();
     }
-    
-    public void showConnectionInit() 
-    {
+
+    public void showConnectionInit() {
         FXMLLoader gameConnXMLLoader = getFXMLLoader(GAME_CONN_SCENE_FXML_PATH);
         primaryStage.setScene(new Scene(getRoot(gameConnXMLLoader)));
-        Game_init_connect_Controller  connectionController = gameConnXMLLoader.getController();
-        connectionController.setNewGameListener(()->endConnInitAndStartNewGame(connectionController));
-        connectionController.setJoinGameListener(()->endConnInitAndJoinGame(connectionController));
+        Game_init_connect_Controller connectionController = gameConnXMLLoader.getController();
+        connectionController.setNewGameListener(() -> endConnInitAndStartNewGame(connectionController));
+        connectionController.setJoinGameListener(() -> endConnInitAndJoinGame(connectionController));
         this.connectionController = connectionController;
         showLastGameErrorMessage();
         primaryStage.show();
-        
+
     }
 
     public void showLastGameErrorMessage() {
         connectionController.showErrorMessage(errorMessage);
         errorMessage = "";
     }
-    
-    private void endConnInitAndStartNewGame(Game_init_connect_Controller connectionController)
-    {   
+
+    private void endConnInitAndStartNewGame(Game_init_connect_Controller connectionController) {
         newGameName = connectionController.getNewGameName();
         showGameInit();
     }
-    
-    private void endConnInitAndJoinGame(Game_init_connect_Controller connectionController)
-    {
+
+    private void endConnInitAndJoinGame(Game_init_connect_Controller connectionController) {
         String gameNameToJoin = connectionController.getGameNameToJoin();
         String userNameToJoin = connectionController.getUserNameToJoin();
         try {
-            joinGame(gameNameToJoin,userNameToJoin);
+            joinGame(gameNameToJoin, userNameToJoin);
         } catch (GameDoesNotExists_Exception ex) {
             Logger.getLogger(MonopolBoard.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void joinGame(String gameNameToJoin, String userNameToJoin) throws GameDoesNotExists_Exception 
-    {
-        
-        if(gameWebService.getWaitingGames().contains(gameNameToJoin))
-        {
+
+    private void joinGame(String gameNameToJoin, String userNameToJoin) throws GameDoesNotExists_Exception {
+
+        if (gameWebService.getWaitingGames().contains(gameNameToJoin)) {
             List<String> playerNames = gameWebService.getPlayersDetails(gameNameToJoin).
-                                                      stream().map(p->p.getName())
-                                                      .collect(Collectors.toList());
+                    stream().map(p -> p.getName())
+                    .collect(Collectors.toList());
             playerNames.add(userNameToJoin);
             clientSharedDataInstance.setClientPlayerName(userNameToJoin);
             isJoinGame = true;
@@ -157,31 +151,24 @@ public class MonopolBoard extends Application
             this.userNameToJoin = userNameToJoin;
             computerPlayers = gameWebService.getGameDetails(gameNameToJoin).getComputerizedPlayers();
             endGetNames(playerNames);
-        }
-        else
-        {
+        } else {
             showRelatedErrorMessage();
         }
     }
 
-    private void showRelatedErrorMessage() 
-    {
+    private void showRelatedErrorMessage() {
         List<String> waitingGames = gameWebService.getWaitingGames();
-            
-        if(!waitingGames.isEmpty())
-        {
+
+        if (!waitingGames.isEmpty()) {
             this.connectionController.showErrorMessage("Game doesn't exists, please try again. "
                     + "Available games:" + String.join(", ", waitingGames));
-        }
-        else        
-        {
+        } else {
             this.connectionController.showErrorMessage("No available games now, please create "
                     + "new game first.");
         }
     }
-        
-    public void showGameInit()
-    {
+
+    public void showGameInit() {
         FXMLLoader gameInitXMLLoader = getFXMLLoader(GAME_INIT_SCENE_FXML_PATH);
         primaryStage.setScene(new Scene(getRoot(gameInitXMLLoader)));
 
@@ -190,16 +177,14 @@ public class MonopolBoard extends Application
         primaryStage.show();
     }
 
-    private void endGameInit(GameInitSceneController gameInitController)
-    {
+    private void endGameInit(GameInitSceneController gameInitController) {
         externalXML = gameInitController.getXMLFile();
         humanPlayers = gameInitController.getHumanPlayers();
         computerPlayers = gameInitController.getComputerPlayers();
         askForHumanPlayersNames(gameInitController.getHumanPlayers());
     }
 
-    private void askForHumanPlayersNames(int humanPlayers)
-    {
+    private void askForHumanPlayersNames(int humanPlayers) {
         FXMLLoader getNamesFXMLLoader = getFXMLLoader(GET_NAMES_SCENE_FXML_PATH);
         Parent root = getRoot(getNamesFXMLLoader);
         GetNamesSceneController getNamesFXMLLoaderController = getNamesFXMLLoader.getController();
@@ -208,81 +193,64 @@ public class MonopolBoard extends Application
         showNextScene(humanPlayers, root, getNamesFXMLLoaderController);
     }
 
-    private void showNextScene(int humanPlayers, Parent root, GetNamesSceneController getNamesFXMLLoaderController)
-    {
-        if (humanPlayers != 0)
-        {
+    private void showNextScene(int humanPlayers, Parent root, GetNamesSceneController getNamesFXMLLoaderController) {
+        if (humanPlayers != 0) {
             primaryStage.setScene(new Scene(root));
             getNamesFXMLLoaderController
                     .setGetNamesEndedListener(() -> endGetNames(getNamesFXMLLoaderController.getNames()));
-        }
-        else
-        {
+        } else {
             endGetNames(getNamesFXMLLoaderController.getNames());
         }
     }
 
-    private void endGetNames(List<String> names)
-    {
+    private void endGetNames(List<String> names) {
         FXMLLoader getNamesFXMLLoader = getFXMLLoader(BOARD_SCENE_FXML_PATH);
         Parent root = getRoot(getNamesFXMLLoader);
         boardSceneController = getNamesFXMLLoader.getController();
-        if(!isJoinGame)
-        {
+        if (!isJoinGame) {
             clientSharedDataInstance.setClientPlayerName(names.get(FIRST_NAME_INDEX));
         }
-        playerNames = names;
+        playerNames.addAll(names);
         boardSceneController.setPlayers(names, computerPlayers);
         currentBoardScene = new Scene(root);
         primaryStage.setScene(currentBoardScene);
         primaryStage.centerOnScreen();
-        
+
         startGame();
     }
 
-
-    private FXMLLoader getFXMLLoader(String fxmlPath)
-    {
+    private FXMLLoader getFXMLLoader(String fxmlPath) {
         return new FXMLLoader(getClass().getResource(fxmlPath));
     }
 
-    private Parent getRoot(FXMLLoader fxmlLoader)
-    {
-        try
-        {
+    private Parent getRoot(FXMLLoader fxmlLoader) {
+        try {
             return (Parent) fxmlLoader.load(fxmlLoader.getLocation().openStream());
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalPathStateException(e.getMessage());
         }
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(args);
     }
 
-    private void startGame()
-    {
+    private void startGame() {
         playMonopoly();
     }
 
-    private void playMonopoly()
-    {
-        try
-        {
+    private void playMonopoly() {
+        try {
             startController();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
         }
     }
 
-    private void startController()
-    {
+    private void startController() {
         GuiView guiView = new GuiView(this);
         Controller controller = createController(guiView);
-        
+
         try {
             controller.play();
         } catch (Exception ex) {
@@ -293,164 +261,147 @@ public class MonopolBoard extends Application
 
     public Controller createController(GuiView guiView) {
         Controller controller = new Controller(guiView, gameWebService);
-        if(!isJoinGame)
-        {
+        if (!isJoinGame) {
             controller.setGameName(newGameName);
-        }
-        else
-        {
+        } else {
             controller.setJoinGame(gameNameToJoin, userNameToJoin);
         }
         return controller;
     }
-    
-    public File getExternalXML()
-    {
+
+    public File getExternalXML() {
         return externalXML;
     }
 
-    public int getHumanPlayers()
-    {
+    public int getHumanPlayers() {
         return humanPlayers;
     }
 
-    public int getComputerPlayers()
-    {
+    public int getComputerPlayers() {
         return computerPlayers;
     }
-    
-    public List<String> getHumanPlayersNames()
-    {
-        return humanPlayersNames;
+
+    public String getCurrentPlayerName() {
+        return boardSceneController.getCurrentPlayerName();
     }
 
-    public void showMessageToPlayer(String eventMessage)
-    {
-        if (boardSceneController != null)
-        {
+    public void showMessageToPlayer(String eventMessage) {
+        if (boardSceneController != null) {
             boardSceneController.showMessage(eventMessage);
         }
     }
 
-    public void movePlayer(int cell, String playerName)
-    {
-        if (boardSceneController != null)
-        {
+    public void movePlayer(int cell, String playerName) {
+        if (boardSceneController != null) {
             boardSceneController.movePlayer(cell, playerName);
         }
     }
 
-    void promptPlayerToBuy(String eventMessage, PlayerBuyAssetDecision playersDecision, int eventId)
-    {
+    void promptPlayerToBuy(String eventMessage, PlayerBuyAssetDecision playersDecision, int eventId) {
         boardSceneController.promptPlayer(eventMessage, playersDecision, eventId);
     }
 
-    void setDrawables(List<? extends GuiCell> drawableProperties)
-    {
+    void setDrawables(List<? extends GuiCell> drawableProperties) {
         boardSceneController.initCellsNames(drawableProperties);
     }
 
-    public void updateMoney(String fromPlayerName, String toPlayerName, int paymentAmount)
-    {
+    public void updateMoney(String fromPlayerName, String toPlayerName, int paymentAmount) {
         boardSceneController.updateMoney(fromPlayerName, toPlayerName, paymentAmount);
     }
 
-    void playerLost(String eventMessage, String playerName)
-    {
+    void playerLost(String eventMessage, String playerName) {
         boardSceneController.playerLost(eventMessage, playerName);
     }
 
-    void showGameOverMsg(String game_Over)
-    {
+    public void loadPlayers() {
+        try {
+            List<String> names = gameWebService.getPlayersDetails(newGameName).stream().map(PlayerDetails::getName).collect(Collectors.toList());
+            playerNames.addAll(names);
+            boardSceneController.addComputerPlayers(gameWebService.getGameDetails(newGameName).getComputerizedPlayers());
+            boardSceneController.setHumanPlayers(names);
+        } catch (GameDoesNotExists_Exception ex) {
+            Logger.getLogger(MonopolBoard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    void showGameOverMsg(String game_Over) {
         boardSceneController.showGameOverMsg(game_Over);
     }
 
-    void showDiceRollResult(String playerName, String eventMessage, int firstResult, int secondResult)
-    {
+    void showDiceRollResult(String playerName, String eventMessage, int firstResult, int secondResult) {
         boardSceneController.showDiceRollResult(playerName, eventMessage, firstResult, secondResult);
     }
 
-    void showSurpriseCard(String eventMessage)
-    {
+    void showSurpriseCard(String eventMessage) {
         boardSceneController.showSurpriseCard(eventMessage);
     }
 
     void initPlayerDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, PlayerBuyHouseDecision playerBuyHouseDecision,
-                             PlayerResign playerResign)
-    {
+            PlayerResign playerResign) {
         boardSceneController.initPromtDecisions(playerBuyAssetDecision, playerBuyHouseDecision, playerResign);
         boardSceneController.initAnotherGameDecisions(startNewGameProcedure, notToStartNewGameProcedure);
     }
 
-    public void buy(String playerName, int boardSquareID)
-    {
+    public void buy(String playerName, int boardSquareID) {
         boardSceneController.buy(playerName, boardSquareID);
     }
 
-    public void showWarningCard(String eventMessage)
-    {
+    public void showWarningCard(String eventMessage) {
         boardSceneController.showWarningCard(eventMessage);
     }
 
-    public void showPlayerResignMsg(String eventMessage, String playerName)
-    {
+    public void showPlayerResignMsg(String eventMessage, String playerName) {
         boardSceneController.showPlayerResignMsg(eventMessage, playerName);
     }
 
-    public void startAnotherGame()
-    {
+    public void startAnotherGame() {
         cleanUp();
         startGame(primaryStage);
     }
 
-    private void cleanUp()
-    {
+    private void cleanUp() {
+        primaryStage.close();
         externalXML = null;
         humanPlayers = 0;
         computerPlayers = 0;
-        humanPlayersNames    = new ArrayList<>(); boardSceneController = null;
-        playerNames = new ArrayList<>();
+        humanPlayersNames = new ArrayList<>();
+        boardSceneController = null;
+        playerNames = new HashSet<>();
         isNewGameRequired = true;
         currentBoardScene = null;
     }
 
-    public void notToStartAnotherGame()
-    {
+    public void notToStartAnotherGame() {
         isNewGameRequired = false;
         Platform.exit();
     }
-    
+
     private void initWebServices() {
         URL location;
-        try 
-        {
+        try {
             location = getUrl();
             service = new MonopolyWebServiceService(location);
             gameWebService = service.getMonopolyWebServicePort();
-        } 
-        catch (MalformedURLException ex) 
-        {
+        } catch (MalformedURLException ex) {
             Logger.getLogger(MonopolBoard.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public URL getUrl() throws MalformedURLException {
-        if (serverIP.contains("localhost"))
+        if (serverIP.contains("localhost")) {
             return new URL("http://" + serverIP + ":" + serverPort + "/monopoly/MonopolyWebServiceService?wsdl");
-        else
+        } else {
             return new URL("http://" + serverIP + ":" + serverPort + "/MonopolyWebServiceService?wsdl");
+        }
     }
 
-    void showErrorMessage(String message) 
-    {
-        if(connectionController!=null)
-        {
+    void showErrorMessage(String message) {
+        if (connectionController != null) {
             connectionController.showErrorMessage(message);
         }
     }
 
-    void showWaitingForPlayerMessage(String string) 
-    {
+    void showWaitingForPlayerMessage(String string) {
         boardSceneController.showWaitingForPlayerMessage(string);
     }
 
