@@ -130,6 +130,7 @@ public class MonopolBoard extends Application {
 
     private void endConnInitAndJoinGame(Game_init_connect_Controller connectionController) {
         String gameNameToJoin = connectionController.getGameNameToJoin();
+        newGameName = gameNameToJoin;
         String userNameToJoin = connectionController.getUserNameToJoin();
         try {
             joinGame(gameNameToJoin, userNameToJoin);

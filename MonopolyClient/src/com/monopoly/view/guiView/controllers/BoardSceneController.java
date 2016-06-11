@@ -197,8 +197,18 @@ public class BoardSceneController implements Initializable
 
     private void addHumanPlayers(List<String> humanPlayerNames)
     {
-        humanPlayerNames.forEach((name) -> placePlayerOnBoard(name, START_PLACE));
+        humanPlayerNames.forEach((name) -> addHumanPlayerWithNoComputerNames(name, START_PLACE));
     }
+    
+    private void addHumanPlayerWithNoComputerNames(String playerName, int placeIndex)
+    {
+        String search = "computer";
+        if(playerName.toLowerCase().indexOf(search.toLowerCase()) == -1 )
+        {
+            placePlayerOnBoard(playerName, placeIndex);
+        }
+    }
+
 
     private void addJoindedPlayer(String playerName)
     {
@@ -320,7 +330,7 @@ public class BoardSceneController implements Initializable
     public void movePlayer(int cell, String PlayerName)
     {
         PlayerPosition playerPos = playersPlaceOnBoard.get(PlayerName);
-        if (playerPos.getPlayerIcon() != null)
+        if (playerPos!=null && playerPos.getPlayerIcon() != null)
         {
             addPlayerIconToBoardMoves(calculateCellToMove(cell, playerPos.getCell()), playerPos.getPlayerIcon());
         }
