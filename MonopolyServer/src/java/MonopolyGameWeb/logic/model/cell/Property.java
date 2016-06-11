@@ -2,8 +2,6 @@ package MonopolyGameWeb.logic.model.cell;
 
 import MonopolyGameWeb.logic.model.player.Player;
 
-import javafx.scene.paint.Color;
-
 public abstract class Property extends Cell
 {
     protected String        name;
@@ -106,7 +104,7 @@ public abstract class Property extends Cell
     }
 
     @Override
-    public Color getGroupColor()
+    public String getGroupColor()
     {
         return getPropertyGroup().getColor();
     }

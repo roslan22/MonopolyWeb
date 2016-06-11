@@ -3,8 +3,6 @@ package MonopolyGameWeb.logic.model.cell;
 import MonopolyGameWeb.logic.model.player.Player;
 import MonopolyGameWeb.logic.engine.DrawableProperty;
 
-import javafx.scene.paint.Color;
-
 
 public abstract class Cell implements DrawableProperty
 {
@@ -49,9 +47,9 @@ public abstract class Cell implements DrawableProperty
     }
 
     @Override
-    public Color getGroupColor()
+    public String getGroupColor()
     {
-        return Color.TRANSPARENT;
+        return "TRANSPARENT";
     }
 
     @Override

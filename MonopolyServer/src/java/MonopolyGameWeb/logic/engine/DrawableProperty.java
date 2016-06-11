@@ -1,7 +1,5 @@
 package MonopolyGameWeb.logic.engine;
 
-import javafx.scene.paint.Color;
-
 public interface DrawableProperty
 {
     String getPropertyName();
@@ -10,7 +8,7 @@ public interface DrawableProperty
 
     String getGroupName();
 
-    Color getGroupColor();
+    String getGroupColor();
 
     int getHousesOwned();
 

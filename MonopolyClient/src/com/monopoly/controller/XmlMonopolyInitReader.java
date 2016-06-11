@@ -187,10 +187,11 @@ public class XmlMonopolyInitReader
     
     public List<? extends GuiCell> getDrawables()
     {
+        ColorParser cp = new ColorParser();
          return getCells().stream()
                 .map(c -> new GuiCellBuilder().setPropertyName(c.getPropertyName())
                                                 .setGroupName(c.getGroupName())
-                                                .setGroupColor(c.getGroupColor())
+                                                .setGroupColor(cp.parse(c.getGroupColor()))
                                                 .setHousesOwned(c.getHousesOwned())
                                                 .setOwnerName("")
                                                 .setPropertySummary(c.getPropertySummary()).createGuiCell()).collect(

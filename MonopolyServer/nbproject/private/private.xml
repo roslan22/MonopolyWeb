@@ -5,8 +5,14 @@
         <group>
             <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/java/MonopolyGameWeb/ws/XmlMonopolyInitReader.java</file>
             <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService.wsdl</file>
+            <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/java/MonopolyGameWeb/logic/model/player/ComputerPlayer.java</file>
+            <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/java/MonopolyGameWeb/logic/model/player/Player.java</file>
+            <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/java/MonopolyGameWeb/logic/engine/MonopolyEngine.java</file>
+            <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/build/generated-sources/jax-ws/ws/monopoly/GameDetails.java</file>
             <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/conf/xml-resources/web-services/monopolWS/wsdl/MonopolyWebServiceService_schema1.xsd</file>
+            <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/java/MonopolyGameWeb/logic/engine/Engine.java</file>
             <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/nbproject/build-impl.xml</file>
+            <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/java/MonopolyGameWeb/logic/model/player/HumanPlayer.java</file>
             <file>file:/C:/Develop/NetBeans/MonopolyWeb2/MonopolyServer/src/java/MonopolyGameWeb/ws/monopolWS.java</file>
         </group>
     </open-files>

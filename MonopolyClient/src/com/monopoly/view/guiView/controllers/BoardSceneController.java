@@ -166,12 +166,14 @@ public class BoardSceneController implements Initializable
 
     private void createRightTopPlayersMenu()
     {
+        addSeqTransition(() -> {
         vboxPlayers.getChildren().clear();
         for (String name : playersPlaceOnBoard.keySet())
         {
             HBox hbox = createPlayerHbox(name);
             vboxPlayers.getChildren().add(hbox);
         }
+        });
     }
 
     private HBox createPlayerHbox(String name)
@@ -210,6 +212,7 @@ public class BoardSceneController implements Initializable
 
     private void placePlayerOnBoard(String playerName, int placeIndex)
     {
+        addSeqTransition(() -> {
         String playerID;
         playerID = "player" + nextPlayerPlaceIndex;
 
@@ -219,6 +222,7 @@ public class BoardSceneController implements Initializable
         Node playerIcon = playersPlaceOnBoard.get(playerName).getPlayerIcon();
         boardCells.get(placeIndex).getChildren().add(playerIcon);
         nextPlayerPlaceIndex++;
+        });
     }
 
     private PlayerPosition createPlayerPosition(int placeIndex, String playerID)

@@ -10,7 +10,7 @@ public interface DrawableProperty
 
     String getGroupName();
 
-    Color getGroupColor();
+    String getGroupColor();
 
     int getHousesOwned();
 

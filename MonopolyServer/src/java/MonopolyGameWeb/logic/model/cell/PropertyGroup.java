@@ -6,21 +6,19 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import javafx.scene.paint.Color;
-
 public class PropertyGroup
 {
-    private static LinkedList<Color> PROPERTY_COLORS = new LinkedList<>(Arrays.asList(Color.CHOCOLATE,
-                                                                                       Color.AQUAMARINE,
-                                                                                       Color.PLUM,
-                                                                                       Color.SANDYBROWN,
-                                                                                       Color.LIGHTCORAL,
-                                                                                       Color.LIGHTYELLOW,
-                                                                                       Color.DARKSEAGREEN,
-                                                                                       Color.LIGHTBLUE));
+    private static LinkedList<String> PROPERTY_COLORS = new LinkedList<>(Arrays.asList("CHOCOLATE",
+                                                                                       "AQUAMARINE",
+                                                                                       "PLUM",
+                                                                                       "SANDYBROWN",
+                                                                                       "LIGHTCORAL",
+                                                                                       "LIGHTYELLOW",
+                                                                                       "DARKSEAGREEN",
+                                                                                       "LIGHTBLUE"));
     private String                   name;
     private List<? extends Property> properties;
-    private Color                   color;
+    private String                   color;
 
     public PropertyGroup(String name, List<? extends Property> countryCities)
     {
@@ -29,11 +27,11 @@ public class PropertyGroup
         color = generateColor();
     }
 
-    private static Color generateColor()
+    private static String generateColor()
     {
         if (PROPERTY_COLORS.isEmpty())
         {
-            return Color.TRANSPARENT;
+            return "TRANSPARENT";
         }
         return PROPERTY_COLORS.pop();
     }
@@ -60,7 +58,7 @@ public class PropertyGroup
         return true;
     }
 
-    public Color getColor()
+    public String getColor()
     {
         return color;
     }

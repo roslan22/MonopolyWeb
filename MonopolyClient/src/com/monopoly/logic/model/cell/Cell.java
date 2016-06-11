@@ -45,9 +45,9 @@ public abstract class Cell implements DrawableProperty
     }
 
     @Override
-    public Color getGroupColor()
+    public String getGroupColor()
     {
-        return Color.TRANSPARENT;
+        return "TRANSPARENT";
     }
 
     @Override

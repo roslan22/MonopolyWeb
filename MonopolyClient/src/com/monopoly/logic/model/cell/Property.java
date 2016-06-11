@@ -91,7 +91,7 @@ public abstract class Property extends Cell
     }
 
     @Override
-    public Color getGroupColor()
+    public String getGroupColor()
     {
         return getPropertyGroup().getColor();
     }
