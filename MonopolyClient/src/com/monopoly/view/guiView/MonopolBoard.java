@@ -404,6 +404,7 @@ public class MonopolBoard extends Application {
 
     void showWaitingForPlayerMessage(String string) {
         boardSceneController.showWaitingForPlayerMessage(string);
+        
     }
 
 }

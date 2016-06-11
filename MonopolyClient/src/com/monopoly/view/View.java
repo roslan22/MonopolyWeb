@@ -7,7 +7,6 @@ import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
 import com.monopoly.view.playerDescisions.PlayerResign;
 
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class View

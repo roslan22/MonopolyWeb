@@ -706,11 +706,11 @@ public class BoardSceneController implements Initializable
 
     public void showWaitingForPlayerMessage(String string) 
     {
-         //addSeqTransition(() -> {
+         addSeqTransition(() -> {
             gameMsg.setText(string);
             gameMsg.setScrollTop(Double.MAX_VALUE);
-         /*}
-            ); */
+         });
+         startFadeAnimations();
     }
 
     public String getCurrentPlayerName() {

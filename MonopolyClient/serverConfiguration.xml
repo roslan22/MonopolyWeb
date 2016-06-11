@@ -1,1 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><ServerConfiguraion><serverIp>monopoly-web-server.eu-central-1.elasticbeanstalk.com</serverIp><port>80</port></ServerConfiguraion>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><ServerConfiguraion><serverIp>localhost</serverIp><port>8080</port></ServerConfiguraion>

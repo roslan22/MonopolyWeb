@@ -35,7 +35,7 @@ import ws.monopoly.PlayerStatus;
 
 public class MonopolyEngine implements Engine
 {
-    public static final long TIMER_DELAY = 1000 * 60;
+    public static final long TIMER_DELAY = 1000 * 60 * 10;
     public static final int FIRST_PLAYER_INDEX      = 0;
     public static final int END_OF_ROUND_MONEY_EARN = 200;
     public static final int MINIMUM_GAME_PLAYERS    = 2;
