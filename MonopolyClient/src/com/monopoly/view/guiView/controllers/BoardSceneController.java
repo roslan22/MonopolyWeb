@@ -222,16 +222,16 @@ public class BoardSceneController implements Initializable
 
     private void placePlayerOnBoard(String playerName, int placeIndex)
     {
-        addSeqTransition(() -> {
-        String playerID;
-        playerID = "player" + nextPlayerPlaceIndex;
-
-        playersPlaceOnBoard.put(playerName, createPlayerPosition(placeIndex, playerID));
+        String playerID = "player" + nextPlayerPlaceIndex;
+        
         playerNamesAndIds.put(playerName, playerID);
         playerNameToMoney.put(playerName, INIT_MONEY);
+        playersPlaceOnBoard.put(playerName, createPlayerPosition(placeIndex, playerID));
+        nextPlayerPlaceIndex++;
+
+        addSeqTransition(() -> {
         Node playerIcon = playersPlaceOnBoard.get(playerName).getPlayerIcon();
         boardCells.get(placeIndex).getChildren().add(playerIcon);
-        nextPlayerPlaceIndex++;
         });
     }
 
@@ -706,8 +706,11 @@ public class BoardSceneController implements Initializable
 
     public void showWaitingForPlayerMessage(String string) 
     {
+         //addSeqTransition(() -> {
             gameMsg.setText(string);
             gameMsg.setScrollTop(Double.MAX_VALUE);
+         /*}
+            ); */
     }
 
     public String getCurrentPlayerName() {
