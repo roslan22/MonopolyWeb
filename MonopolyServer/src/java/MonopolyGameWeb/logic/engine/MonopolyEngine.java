@@ -126,9 +126,10 @@ public class MonopolyEngine implements Engine
         if (onBuyDecisionTaken == null)
             return;
 
-        if (currentPlayer.getPlayerID() != playerID)
+       /* if (currentPlayer.getPlayerID() != playerID)
             throw  new InvalidParameters_Exception("Invalid playerID", new InvalidParameters());
-        
+        */
+       
         resignTimer.cancel();
         onBuyDecisionTaken = null;
         events.addPlayerResignEvent(currentPlayer);
