@@ -32,6 +32,7 @@ import ws.monopoly.InvalidParameters;
 import ws.monopoly.InvalidParameters_Exception;
 import ws.monopoly.PlayerDetails;
 import ws.monopoly.PlayerStatus;
+import ws.monopoly.PlayerType;
 
 public class MonopolyEngine implements Engine
 {
@@ -153,7 +154,8 @@ public class MonopolyEngine implements Engine
 
     public boolean isStillPlaying()
     {
-        return (players.size() - lostPlayers.size()) >= MINIMUM_GAME_PLAYERS;
+        return ((players.size() - lostPlayers.size()) >= MINIMUM_GAME_PLAYERS) 
+                && (humanPlayers != 0);
     }
 
     public DiceRoll rollDices()
@@ -309,6 +311,8 @@ public class MonopolyEngine implements Engine
     {
         player.setPlayerStatus(PlayerStatus.RETIRED);
         lostPlayers.add(player);
+        if(player.getPlayerType() == PlayerType.HUMAN)
+            humanPlayers--;
         events.addPlayerLostEvent(player);
         board.playerLost(player);
     }
