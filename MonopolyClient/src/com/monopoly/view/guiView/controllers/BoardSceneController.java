@@ -162,20 +162,18 @@ public class BoardSceneController implements Initializable
 
     public void setHumanPlayers(List<String> playerNames) {
         addHumanPlayers(playerNames);
-        createRightTopPlayersMenu();
+        addSeqTransition(() -> createRightTopPlayersMenu());
         msgTextArea.setText("All players are here!");
     }
 
     private void createRightTopPlayersMenu()
     {
-        addSeqTransition(() -> {
         vboxPlayers.getChildren().clear();
         for (String name : playersPlaceOnBoard.keySet())
         {
             HBox hbox = createPlayerHbox(name);
             vboxPlayers.getChildren().add(hbox);
         }
-        });
     }
 
     private HBox createPlayerHbox(String name)
