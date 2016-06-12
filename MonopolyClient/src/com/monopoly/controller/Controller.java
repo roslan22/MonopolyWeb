@@ -7,12 +7,14 @@ import com.monopoly.ws.EventType;
 import com.monopoly.ws.GameDoesNotExists_Exception;
 import com.monopoly.ws.InvalidParameters_Exception;
 import com.monopoly.ws.MonopolyWebService;
+import java.net.SocketException;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.ws.WebServiceException;
 
 public class Controller {
 
@@ -78,14 +80,21 @@ public class Controller {
     }
     
     public void getEventsTimerAction() {
-        try {
-            System.out.println("Quating Server For Events");
+        try 
+        {
+            System.out.println("Querying Server For Events");
             List<Event> e = gameWebService.getEvents(lastEvent, DUMMY_PLAYER_ID);
             if (!e.isEmpty()) {
                 timer.cancel();
                 executeEvents(e);
             }
-        } catch (InvalidParameters_Exception ex) {
+        }
+        catch (WebServiceException ex) 
+        {
+            ex.printStackTrace();
+            getEventsTimerAction();
+        }
+        catch (InvalidParameters_Exception ex) {
             ex.printStackTrace();
         }
     }
