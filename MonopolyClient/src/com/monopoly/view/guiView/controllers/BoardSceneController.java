@@ -151,6 +151,7 @@ public class BoardSceneController implements Initializable
         surpriseText.setWrapText(true);
         msgTextArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> msgTextArea
                 .setScrollTop(Double.MAX_VALUE));
+        msgTextArea.setText("Wainting for other players");
     }
 
     public void setPlayers(List<String> playerNames, int computerPlayers)
@@ -162,6 +163,7 @@ public class BoardSceneController implements Initializable
     public void setHumanPlayers(List<String> playerNames) {
         addHumanPlayers(playerNames);
         createRightTopPlayersMenu();
+        msgTextArea.setText("All players are here!");
     }
 
     private void createRightTopPlayersMenu()
@@ -383,6 +385,7 @@ public class BoardSceneController implements Initializable
             this.playerBuyAssetDecision = playersDecision;
             textAreaPromt.setText(text);
             this.waitingForAnswerEventId = eventID;
+            showPromptPane();
         });
 
         startFadeAnimations();
@@ -402,11 +405,7 @@ public class BoardSceneController implements Initializable
             seqTransition = new SequentialTransition();
             System.out.println("ok goood - seq animations finished");
             isAnimationsFinished = true;
-            if (!isGameOver)
-            {
-                showPromptPane();
-            }
-            else
+            if(isGameOver)
             {
                 showTryAnotherGamePane();
             }
@@ -416,6 +415,7 @@ public class BoardSceneController implements Initializable
     private void hidePromptPane()
     {
         promtPane.setVisible(false);
+        textAreaPromt.clear();
     }
 
     private void showPromptPane()

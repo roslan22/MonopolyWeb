@@ -316,6 +316,7 @@ public class MonopolBoard extends Application {
 
     public void loadPlayers() {
         try {
+           
             List<String> names = gameWebService.getPlayersDetails(newGameName).stream().map(PlayerDetails::getName).collect(Collectors.toList());
             playerNames.addAll(names);
             boardSceneController.addComputerPlayers(gameWebService.getGameDetails(newGameName).getComputerizedPlayers());
