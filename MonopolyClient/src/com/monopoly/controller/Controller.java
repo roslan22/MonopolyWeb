@@ -123,6 +123,7 @@ public class Controller {
             monopolyInitReader.read();
             view.setDrawables(monopolyInitReader.getDrawables());
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new Exception("Board didn't initialize");
         }
     }
